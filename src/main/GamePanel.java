@@ -3,6 +3,7 @@ package main;
 import entity.Entity;
 import entity.Player;
 import tile.TileManager;
+import tiles_interactive.InteractiveTiles;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[] objects = new Entity[20];
     public Entity[] npc = new Entity[10];
     public Entity[] monster = new Entity[20];
+    public InteractiveTiles[] iTile = new InteractiveTiles[50];
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>(); // entity render order
 
@@ -68,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
         assManager.setObject();
         assManager.setNPC();
         assManager.setMonster();
-        // playMusic(0);
+        assManager.setInteractiveTile();
         gameState = titleState;
     }
 
@@ -135,6 +137,13 @@ public class GamePanel extends JPanel implements Runnable {
                 if(projectileList.get(i).alive) projectileList.get(i).update();
                 if(!projectileList.get(i).alive) projectileList.remove(i);
             }
+
+            // INTERACTIVE TILES
+            for(int i = 0; i < iTile.length; i++) {
+                if(iTile[i] != null) {
+                    iTile[i].update();
+                }
+            }
         }
         if(gameState == pauseState) {
             // nothing
@@ -155,6 +164,12 @@ public class GamePanel extends JPanel implements Runnable {
         else {
             // DRAW TILES
             tileManager.draw(graphics2D);
+
+            for (InteractiveTiles interactiveTiles : iTile) {
+                if (interactiveTiles != null) {
+                    interactiveTiles.draw(graphics2D);
+                }
+            }
 
             // ADD PLAYER
             entityList.add(player);

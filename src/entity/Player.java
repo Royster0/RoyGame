@@ -158,6 +158,9 @@ public class Player extends Entity {
             int monsterIndex = gamePanel.collision.checkEntity(this, gamePanel.monster);
             interactMonster(monsterIndex);
 
+            // CHECK INTERACTIVE TILE COLLISION
+            int iTileIndex = gamePanel.collision.checkEntity(this, gamePanel.iTile);
+
             // CHECK EVENT
             gamePanel.eventManager.checkEvent();
 
@@ -256,6 +259,9 @@ public class Player extends Entity {
             int monsterIndex = gamePanel.collision.checkEntity(this, gamePanel.monster);
             damageMonster(monsterIndex, attack);
 
+            int iTileIndex = gamePanel.collision.checkEntity(this, gamePanel.iTile);
+            damageITile(iTileIndex);
+
             worldX = currentWorldX;
             worldY = currentWorldY;
             hitBox.width = hitboxAreaWidth;
@@ -339,6 +345,19 @@ public class Player extends Entity {
                     exp += gamePanel.monster[monIndex].exp;
                     checkLevelUp();
                 }
+            }
+        }
+    }
+
+    public void damageITile(int iTileIndex) {
+        if(iTileIndex != 999 && gamePanel.iTile[iTileIndex].destructable &&
+                gamePanel.iTile[iTileIndex].correctItem(this) && !gamePanel.iTile[iTileIndex].invincible) {
+            gamePanel.iTile[iTileIndex].life--;
+            gamePanel.iTile[iTileIndex].playEffect();
+            gamePanel.iTile[iTileIndex].invincible = true;
+
+            if(gamePanel.iTile[iTileIndex].life < 0) {
+                gamePanel.iTile[iTileIndex] = gamePanel.iTile[iTileIndex].getDestroyedForm();
             }
         }
     }

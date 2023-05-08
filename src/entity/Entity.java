@@ -132,6 +132,7 @@ public class Entity {
         gamePanel.collision.checkObject(this, false);
         gamePanel.collision.checkEntity(this, gamePanel.npc);
         gamePanel.collision.checkEntity(this, gamePanel.monster);
+        gamePanel.collision.checkEntity(this, gamePanel.iTile);
         boolean contactedPlayer = gamePanel.collision.checkPlayer(this);
 
         // If monster, damage player
