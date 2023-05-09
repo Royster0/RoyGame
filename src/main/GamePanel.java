@@ -8,7 +8,6 @@ import tiles_interactive.InteractiveTiles;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -48,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[] monster = new Entity[20];
     public InteractiveTiles[] iTile = new InteractiveTiles[50];
     public ArrayList<Entity> projectileList = new ArrayList<>();
+    public ArrayList<Entity> particleList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>(); // entity render order
 
     // Game State
@@ -139,10 +139,16 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // INTERACTIVE TILES
-            for(int i = 0; i < iTile.length; i++) {
-                if(iTile[i] != null) {
-                    iTile[i].update();
+            for (InteractiveTiles interactiveTiles : iTile) {
+                if (interactiveTiles != null) {
+                    interactiveTiles.update();
                 }
+            }
+
+            // PARTICLES
+            for(int i = 0; i < particleList.size(); i++) {
+                if(particleList.get(i).alive) particleList.get(i).update();
+                if(!particleList.get(i).alive) particleList.remove(i);
             }
         }
         if(gameState == pauseState) {
@@ -188,6 +194,10 @@ public class GamePanel extends JPanel implements Runnable {
             // ADD PROJECTILES
             for(Entity projectile : projectileList) {
                 if(projectile != null) entityList.add(projectile);
+            }
+            // ADD PARTICLES
+            for(Entity particle : particleList) {
+                if(particle != null) entityList.add(particle);
             }
 
             // SORT ENTITIES BASED ON THEIR WORLD Y

@@ -3,6 +3,8 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
+import java.awt.*;
+
 public class OBJ_Fireball extends Projectile {
 
     GamePanel gamePanel;
@@ -41,4 +43,16 @@ public class OBJ_Fireball extends Projectile {
     public void subtractMana(Entity user) {
         user.mana -= manaCost;
     }
+
+    @Override
+    public Color getParticleColor() { return new Color(213, 41, 18); }
+
+    @Override
+    public int getParticleSize() { return 7; } // 6px
+
+    @Override
+    public int getParticleSpeed() { return 1; } // 1 px/frame
+
+    @Override
+    public int getParticleMaxLife() { return 20; } // lasts for 20 frames
 }

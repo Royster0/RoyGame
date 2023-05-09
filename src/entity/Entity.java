@@ -107,7 +107,7 @@ public class Entity {
             case "left" -> direction = "right";
             case "right" -> direction = "left";
         }
-    };
+    }
 
     public void use(Entity entity) {}
 
@@ -180,6 +180,32 @@ public class Entity {
             gamePanel.player.life -= damage;
             gamePanel.player.invincible = true;
         }
+    }
+
+    public Color getParticleColor() { return null; }
+
+    // Returns size of particle in pixels
+    public int getParticleSize() { return 0; }
+
+    // Speed of animation of particle
+    public int getParticleSpeed() { return 0; }
+
+    public int getParticleMaxLife() { return 0; }
+
+    public void generateParticle(Entity generator, Entity target) {
+        Color color = generator.getParticleColor();
+        int size = generator.getParticleSize();
+        int speed = generator.getParticleSpeed();
+        int maxLife = generator.getParticleMaxLife();
+
+        Particle p1 = new Particle(gamePanel, target, color, size, speed, maxLife, -1, -1);
+        Particle p2 = new Particle(gamePanel, target, color, size, speed, maxLife, 1, -1);
+        Particle p3 = new Particle(gamePanel, target, color, size, speed, maxLife, -1, 1);
+        Particle p4 = new Particle(gamePanel, target, color, size, speed, maxLife, 1, 1);
+        gamePanel.particleList.add(p1);
+        gamePanel.particleList.add(p2);
+        gamePanel.particleList.add(p3);
+        gamePanel.particleList.add(p4);
     }
 
     public void draw(Graphics2D graphics2D) {
