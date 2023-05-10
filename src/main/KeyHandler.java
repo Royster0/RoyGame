@@ -101,7 +101,15 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_ESCAPE) gamePanel.gameState = gamePanel.optionState;
 
         // Debug Key
-        if(code == KeyEvent.VK_T) checkDrawTime = !checkDrawTime;
+        if(code == KeyEvent.VK_T) {
+            checkDrawTime = !checkDrawTime;
+        }
+        if(code == KeyEvent.VK_R) {
+            switch (gamePanel.currentMap) {
+                case 0 -> gamePanel.tileManager.loadMap("maps/worldV2.txt", 0);
+                case 1 -> gamePanel.tileManager.loadMap("maps/interior01.txt", 1);
+            }
+        }
     }
 
     // When keypress happens in paused state

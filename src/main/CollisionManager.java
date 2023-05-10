@@ -26,32 +26,32 @@ public class CollisionManager {
         switch (entity.direction) {
             case "up" -> {
                 entityTopRow = (entityTopWorldY - entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityTopRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[entityRightCol][entityTopRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityLeftCol][entityTopRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityRightCol][entityTopRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
             }
             case "down" -> {
                 entityBottomRow = (entityBottomWorldY + entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityBottomRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[entityRightCol][entityBottomRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityLeftCol][entityBottomRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityRightCol][entityBottomRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
             }
             case "left" -> {
                 entityLeftCol = (entityLeftWorldX - entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityTopRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityBottomRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityLeftCol][entityTopRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityLeftCol][entityBottomRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
             }
             case "right" -> {
                 entityRightCol = (entityRightWorldX + entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[entityRightCol][entityTopRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[entityRightCol][entityBottomRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityRightCol][entityTopRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityRightCol][entityBottomRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
@@ -62,15 +62,16 @@ public class CollisionManager {
     public int checkObject(Entity entity, boolean player) {
         int index = 999;
 
-        for(int i = 0; i < gamePanel.objects.length; i++) {
-            if(gamePanel.objects[i] != null) {
+        for(int i = 0; i < gamePanel.objects[1].length; i++) {
+
+            if(gamePanel.objects[gamePanel.currentMap][i] != null) {
                 // Get entity's hitBox position
                 entity.hitBox.x = entity.worldX + entity.hitBox.x;
                 entity.hitBox.y = entity.worldY + entity.hitBox.y;
 
                 // Get object's hitBox position
-                gamePanel.objects[i].hitBox.x = gamePanel.objects[i].worldX + gamePanel.objects[i].hitBox.x;
-                gamePanel.objects[i].hitBox.y = gamePanel.objects[i].worldY + gamePanel.objects[i].hitBox.y;
+                gamePanel.objects[gamePanel.currentMap][i].hitBox.x = gamePanel.objects[gamePanel.currentMap][i].worldX + gamePanel.objects[gamePanel.currentMap][i].hitBox.x;
+                gamePanel.objects[gamePanel.currentMap][i].hitBox.y = gamePanel.objects[gamePanel.currentMap][i].worldY + gamePanel.objects[gamePanel.currentMap][i].hitBox.y;
 
                 switch (entity.direction) {
                     case "up" -> entity.hitBox.y -= entity.speed;
@@ -78,8 +79,8 @@ public class CollisionManager {
                     case "left" -> entity.hitBox.x -= entity.speed;
                     case "right" -> entity.hitBox.x += entity.speed;
                 }
-                if (entity.hitBox.intersects(gamePanel.objects[i].hitBox)) {
-                    if(gamePanel.objects[i].collision) {
+                if (entity.hitBox.intersects(gamePanel.objects[gamePanel.currentMap][i].hitBox)) {
+                    if(gamePanel.objects[gamePanel.currentMap][i].collision) {
                         entity.collisionOn = true;
                     }
                     if(player) {
@@ -89,8 +90,8 @@ public class CollisionManager {
 
                 entity.hitBox.x = entity.hitBoxDefaultX;
                 entity.hitBox.y = entity.hitBoxDefaultY;
-                gamePanel.objects[i].hitBox.x = gamePanel.objects[i].hitBoxDefaultX;
-                gamePanel.objects[i].hitBox.y = gamePanel.objects[i].hitBoxDefaultY;
+                gamePanel.objects[gamePanel.currentMap][i].hitBox.x = gamePanel.objects[gamePanel.currentMap][i].hitBoxDefaultX;
+                gamePanel.objects[gamePanel.currentMap][i].hitBox.y = gamePanel.objects[gamePanel.currentMap][i].hitBoxDefaultY;
             }
         }
 
@@ -98,19 +99,19 @@ public class CollisionManager {
     }
 
     // check npc or monster collision with player
-    public int checkEntity(Entity entity, Entity[] target) {
+    public int checkEntity(Entity entity, Entity[][] target) {
         int index = 999;
 
-        for(int i = 0; i < target.length; i++) {
-            if(target[i] != null) {
+        for(int i = 0; i < target[1].length; i++) {
+            if(target[gamePanel.currentMap][i] != null) {
 
                 // Get entity's hitBox position
                 entity.hitBox.x = entity.worldX + entity.hitBox.x;
                 entity.hitBox.y = entity.worldY + entity.hitBox.y;
 
                 // Get object's hitBox position
-                target[i].hitBox.x = target[i].worldX + target[i].hitBox.x;
-                target[i].hitBox.y = target[i].worldY + target[i].hitBox.y;
+                target[gamePanel.currentMap][i].hitBox.x = target[gamePanel.currentMap][i].worldX + target[gamePanel.currentMap][i].hitBox.x;
+                target[gamePanel.currentMap][i].hitBox.y = target[gamePanel.currentMap][i].worldY + target[gamePanel.currentMap][i].hitBox.y;
 
                 switch (entity.direction) {
                     case "up" -> entity.hitBox.y -= entity.speed;
@@ -118,8 +119,8 @@ public class CollisionManager {
                     case "left" -> entity.hitBox.x -= entity.speed;
                     case "right" -> entity.hitBox.x += entity.speed;
                 }
-                if (entity.hitBox.intersects(target[i].hitBox)) {
-                    if(target[i] != entity) {
+                if (entity.hitBox.intersects(target[gamePanel.currentMap][i].hitBox)) {
+                    if(target[gamePanel.currentMap][i] != entity) {
                         entity.collisionOn = true;
                         index = i;
                     }
@@ -127,8 +128,8 @@ public class CollisionManager {
 
                 entity.hitBox.x = entity.hitBoxDefaultX;
                 entity.hitBox.y = entity.hitBoxDefaultY;
-                target[i].hitBox.x = target[i].hitBoxDefaultX;
-                target[i].hitBox.y = target[i].hitBoxDefaultY;
+                target[gamePanel.currentMap][i].hitBox.x = target[gamePanel.currentMap][i].hitBoxDefaultX;
+                target[gamePanel.currentMap][i].hitBox.y = target[gamePanel.currentMap][i].hitBoxDefaultY;
             }
         }
 

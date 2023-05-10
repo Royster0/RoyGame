@@ -114,11 +114,11 @@ public class Entity {
     public void checkDrop() {}
 
     public void dropItem(Entity droppedItem) {
-        for(int i = 0; i < gamePanel.objects.length; i++) {
-            if(gamePanel.objects[i] == null) {
-                gamePanel.objects[i] = droppedItem;
-                gamePanel.objects[i].worldX = worldX; // drops item at dead monster's body
-                gamePanel.objects[i].worldY = worldY;
+        for(int i = 0; i < gamePanel.objects[1].length; i++) {
+            if(gamePanel.objects[gamePanel.currentMap][i] == null) {
+                gamePanel.objects[gamePanel.currentMap][i] = droppedItem;
+                gamePanel.objects[gamePanel.currentMap][i].worldX = worldX; // drops item at dead monster's body
+                gamePanel.objects[gamePanel.currentMap][i].worldY = worldY;
                 break; // break on first occurrence of empty slot
             }
         }

@@ -42,7 +42,7 @@ public class Player extends Entity {
     public void setDefaultValues() {
         // PLAYER DEFAULT POSITION
         worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 21;
+        worldY = gamePanel.tileSize * 22;
         speed = 4;
         direction = "down";
 
@@ -298,21 +298,21 @@ public class Player extends Entity {
     public void pickUpObject(int objIndex) {
         if(objIndex != 999) {
             // PICKUP ONLY ITEMS
-            if(gamePanel.objects[objIndex].type == type_pickup) {
-                gamePanel.objects[objIndex].use(this);
-                gamePanel.objects[objIndex] = null;
+            if(gamePanel.objects[gamePanel.currentMap][objIndex].type == type_pickup) {
+                gamePanel.objects[gamePanel.currentMap][objIndex].use(this);
+                gamePanel.objects[gamePanel.currentMap][objIndex] = null;
             } else {
                 // INVENTORY ITEMS
                 String text = "";
                 if(inventory.size() < maxInventorySize) {
-                    inventory.add(gamePanel.objects[objIndex]);
+                    inventory.add(gamePanel.objects[gamePanel.currentMap][objIndex]);
                     gamePanel.playEffect(1);
-                    text = "Picked up a " + gamePanel.objects[objIndex].name;
+                    text = "Picked up a " + gamePanel.objects[gamePanel.currentMap][objIndex].name;
                 } else {
                     text = "Your inventory is full!";
                 }
                 gamePanel.ui.addMessage(text);
-                gamePanel.objects[objIndex] = null;
+                gamePanel.objects[gamePanel.currentMap][objIndex] = null;
             }
         }
     }
@@ -323,19 +323,19 @@ public class Player extends Entity {
             if(npcIndex != 999) {
                 attackCanceled = true;
                 gamePanel.gameState = gamePanel.dialogueState;
-                gamePanel.npc[npcIndex].speak();
+                gamePanel.npc[gamePanel.currentMap][npcIndex].speak();
             }
         }
     }
 
     // Enemy damaging player
     public void interactMonster(int monsterIndex) {
-        if(monsterIndex != 999 && !gamePanel.monster[monsterIndex].dying) {
+        if(monsterIndex != 999 && !gamePanel.monster[gamePanel.currentMap][monsterIndex].dying) {
             if(!invincible) {
                 gamePanel.playEffect(6);
 
                 // damage calc
-                int damage = gamePanel.monster[monsterIndex].attack - defense;
+                int damage = gamePanel.monster[gamePanel.currentMap][monsterIndex].attack - defense;
                 life -= damage;
                 invincible = true;
             }
@@ -345,24 +345,24 @@ public class Player extends Entity {
     // Player damaging enemy
     public void damageMonster(int monIndex, int attack) {
         if(monIndex != 999) {
-            if(!gamePanel.monster[monIndex].invincible) {
+            if(!gamePanel.monster[gamePanel.currentMap][monIndex].invincible) {
                 gamePanel.playEffect(5);
 
                 // damage calc
-                int damage = attack - gamePanel.monster[monIndex].defense;
+                int damage = attack - gamePanel.monster[gamePanel.currentMap][monIndex].defense;
                 if(damage < 0) {
                     damage = 0;
                 }
-                gamePanel.monster[monIndex].life -= damage;
+                gamePanel.monster[gamePanel.currentMap][monIndex].life -= damage;
                 gamePanel.ui.addMessage(damage + " dmg");
-                gamePanel.monster[monIndex].invincible = true;
-                gamePanel.monster[monIndex].damageReaction();
+                gamePanel.monster[gamePanel.currentMap][monIndex].invincible = true;
+                gamePanel.monster[gamePanel.currentMap][monIndex].damageReaction();
 
-                if(gamePanel.monster[monIndex].life <= 0) {
-                    gamePanel.monster[monIndex].dying = true;
-                    gamePanel.ui.addMessage(gamePanel.monster[monIndex].name + " slain");
-                    gamePanel.ui.addMessage("+ " + gamePanel.monster[monIndex].exp + " exp");
-                    exp += gamePanel.monster[monIndex].exp;
+                if(gamePanel.monster[gamePanel.currentMap][monIndex].life <= 0) {
+                    gamePanel.monster[gamePanel.currentMap][monIndex].dying = true;
+                    gamePanel.ui.addMessage(gamePanel.monster[gamePanel.currentMap][monIndex].name + " slain");
+                    gamePanel.ui.addMessage("+ " + gamePanel.monster[gamePanel.currentMap][monIndex].exp + " exp");
+                    exp += gamePanel.monster[gamePanel.currentMap][monIndex].exp;
                     checkLevelUp();
                 }
             }
@@ -370,16 +370,16 @@ public class Player extends Entity {
     }
 
     public void damageITile(int iTileIndex) {
-        if(iTileIndex != 999 && gamePanel.iTile[iTileIndex].destructable &&
-                gamePanel.iTile[iTileIndex].correctItem(this) && !gamePanel.iTile[iTileIndex].invincible) {
-            gamePanel.iTile[iTileIndex].life--;
-            gamePanel.iTile[iTileIndex].playEffect();
-            gamePanel.iTile[iTileIndex].invincible = true;
+        if(iTileIndex != 999 && gamePanel.iTile[gamePanel.currentMap][iTileIndex].destructable &&
+                gamePanel.iTile[gamePanel.currentMap][iTileIndex].correctItem(this) && !gamePanel.iTile[gamePanel.currentMap][iTileIndex].invincible) {
+            gamePanel.iTile[gamePanel.currentMap][iTileIndex].life--;
+            gamePanel.iTile[gamePanel.currentMap][iTileIndex].playEffect();
+            gamePanel.iTile[gamePanel.currentMap][iTileIndex].invincible = true;
 
-            generateParticle(gamePanel.iTile[iTileIndex], gamePanel.iTile[iTileIndex]);
+            generateParticle(gamePanel.iTile[gamePanel.currentMap][iTileIndex], gamePanel.iTile[gamePanel.currentMap][iTileIndex]);
 
-            if(gamePanel.iTile[iTileIndex].life < 0) {
-                gamePanel.iTile[iTileIndex] = gamePanel.iTile[iTileIndex].getDestroyedForm();
+            if(gamePanel.iTile[gamePanel.currentMap][iTileIndex].life < 0) {
+                gamePanel.iTile[gamePanel.currentMap][iTileIndex] = gamePanel.iTile[gamePanel.currentMap][iTileIndex].getDestroyedForm();
             }
         }
     }

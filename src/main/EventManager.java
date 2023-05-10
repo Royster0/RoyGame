@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class EventManager {
     GamePanel gamePanel;
-    EventRect[][] eventRect;
+    EventRect[][][] eventRect;
 
     // margin between events being able to trigger
     int previousEventX, previousEventY;
@@ -13,23 +13,29 @@ public class EventManager {
     public EventManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
-        eventRect = new EventRect[gamePanel.maxWorldCol][gamePanel.maxWorldRow];
+        eventRect = new EventRect[gamePanel.maxMap][gamePanel.maxWorldCol][gamePanel.maxWorldRow];
 
+        int map = 0;
         int col = 0;
         int row = 0;
-        while(col < gamePanel.maxWorldCol && row < gamePanel.maxWorldRow) {
-            eventRect[col][row] = new EventRect();
-            eventRect[col][row].x = 22;
-            eventRect[col][row].y = 22;
-            eventRect[col][row].width = 3;
-            eventRect[col][row].height = 3;
-            eventRect[col][row].eventRectDefaultX = eventRect[col][row].x;
-            eventRect[col][row].eventRectDefaultY = eventRect[col][row].y;
-
+        while (map < gamePanel.maxMap && col < gamePanel.maxWorldCol && row < gamePanel.maxWorldRow) {
+            eventRect[map][col][row] = new EventRect();
+            eventRect[map][col][row].x = 22;
+            eventRect[map][col][row].y = 22;
+            eventRect[map][col][row].width = 3;
+            eventRect[map][col][row].height = 3;
+            eventRect[map][col][row].eventRectDefaultX = eventRect[map][col][row].x;
+            eventRect[map][col][row].eventRectDefaultY = eventRect[map][col][row].y;
             col++;
-            if(col == gamePanel.maxWorldCol) {
+
+            if (col == gamePanel.maxWorldCol) {
                 col = 0;
                 row++;
+
+                if (row == gamePanel.maxWorldRow) {
+                    row = 0;
+                    map++;
+                }
             }
         }
     }
@@ -39,49 +45,55 @@ public class EventManager {
         int xDistance = Math.abs(gamePanel.player.worldX - previousEventX);
         int yDistance = Math.abs(gamePanel.player.worldY - previousEventY);
         int totDistance = Math.max(xDistance, yDistance);
-        if(totDistance > gamePanel.tileSize) {
+        if (totDistance > gamePanel.tileSize) {
             canTriggerEvent = true;
         }
 
-        if(canTriggerEvent) {
-            if(hit(27, 16, "right")) damagePit(27, 16, gamePanel.dialogueState);
-            if(hit(23, 12, "up")) healingPool(23, 12, gamePanel.dialogueState);
-            if(hit(24, 12, "up")) healingPool(24, 12, gamePanel.dialogueState);
-            if(hit(22, 12, "up")) healingPool(22, 12, gamePanel.dialogueState);
-            if(hit(21, 12, "up")) healingPool(21, 12, gamePanel.dialogueState);
-            if(hit(25, 12, "up")) healingPool(25, 12, gamePanel.dialogueState);
-        }
+        if (canTriggerEvent) {
+            if (hit(0, 27, 16, "right")) damagePit(gamePanel.dialogueState);
 
+            else if (hit(0, 23, 12, "up")) healingPool(gamePanel.dialogueState);
+            else if (hit(0, 24, 12, "up")) healingPool(gamePanel.dialogueState);
+            else if (hit(0, 22, 12, "up")) healingPool(gamePanel.dialogueState);
+            else if (hit(0, 21, 12, "up")) healingPool(gamePanel.dialogueState);
+            else if (hit(0, 25, 12, "up")) healingPool(gamePanel.dialogueState);
+
+            else if(hit(0, 13, 37, "any")) teleport(1, 12, 13);
+            else if(hit(1, 12, 13, "any")) teleport(0, 13, 37);
+
+        }
     }
 
     // Checks if event has been triggered ir "hit".
-    public boolean hit(int col, int row, String reqDirection) {
+    public boolean hit(int map, int col, int row, String reqDirection) {
         boolean hit = false;
 
-        gamePanel.player.hitBox.x = gamePanel.player.worldX + gamePanel.player.hitBox.x;
-        gamePanel.player.hitBox.y = gamePanel.player.worldY + gamePanel.player.hitBox.y;
-        eventRect[col][row].x = col * gamePanel.tileSize + eventRect[col][row].x;
-        eventRect[col][row].y = row * gamePanel.tileSize + eventRect[col][row].y;
+        if (map == gamePanel.currentMap) {
+            gamePanel.player.hitBox.x = gamePanel.player.worldX + gamePanel.player.hitBox.x;
+            gamePanel.player.hitBox.y = gamePanel.player.worldY + gamePanel.player.hitBox.y;
+            eventRect[map][col][row].x = col * gamePanel.tileSize + eventRect[map][col][row].x;
+            eventRect[map][col][row].y = row * gamePanel.tileSize + eventRect[map][col][row].y;
 
-        // Can check if player is facing certain direction, or if there is no direction requirement.
-        if(gamePanel.player.hitBox.intersects(eventRect[col][row]) && !eventRect[col][row].eventDone) {
-            if(gamePanel.player.direction.contentEquals(reqDirection) || reqDirection.contentEquals("any")) {
-                hit = true;
+            // Can check if player is facing certain direction, or if there is no direction requirement.
+            if (gamePanel.player.hitBox.intersects(eventRect[map][col][row]) && !eventRect[map][col][row].eventDone) {
+                if (gamePanel.player.direction.contentEquals(reqDirection) || reqDirection.contentEquals("any")) {
+                    hit = true;
 
-                previousEventX = gamePanel.player.worldX;
-                previousEventY = gamePanel.player.worldY;
+                    previousEventX = gamePanel.player.worldX;
+                    previousEventY = gamePanel.player.worldY;
+                }
             }
-        }
 
-        gamePanel.player.hitBox.x = gamePanel.player.hitBoxDefaultX;
-        gamePanel.player.hitBox.y = gamePanel.player.hitBoxDefaultY;
-        eventRect[col][row].x = eventRect[col][row].eventRectDefaultX;
-        eventRect[col][row].y = eventRect[col][row].eventRectDefaultY;
+            gamePanel.player.hitBox.x = gamePanel.player.hitBoxDefaultX;
+            gamePanel.player.hitBox.y = gamePanel.player.hitBoxDefaultY;
+            eventRect[map][col][row].x = eventRect[map][col][row].eventRectDefaultX;
+            eventRect[map][col][row].y = eventRect[map][col][row].eventRectDefaultY;
+        }
 
         return hit;
     }
 
-    public void damagePit(int col, int row, int gameState) {
+    public void damagePit(int gameState) {
         gamePanel.gameState = gameState;
         gamePanel.playEffect(6);
         gamePanel.ui.currentDialogue = "You've fell into a pit.";
@@ -89,8 +101,8 @@ public class EventManager {
         canTriggerEvent = false;
     }
 
-    public void healingPool(int col, int row, int gameState) {
-        if(gamePanel.keyHandler.enterPressed) {
+    public void healingPool(int gameState) {
+        if (gamePanel.keyHandler.enterPressed) {
             gamePanel.gameState = gameState;
             gamePanel.player.attackCanceled = true;
             gamePanel.playEffect(2);
@@ -101,10 +113,13 @@ public class EventManager {
         }
     }
 
-    public void teleport(int gameState) {
-        gamePanel.gameState = gameState;
-        gamePanel.ui.currentDialogue = "You've been transported.";
-        gamePanel.player.worldX = gamePanel.tileSize * 37;
-        gamePanel.player.worldY = gamePanel.tileSize * 10;
+    public void teleport(int map, int col, int row) {
+        gamePanel.currentMap = map;
+        gamePanel.player.worldX = gamePanel.tileSize * col;
+        gamePanel.player.worldY = gamePanel.tileSize * row;
+        previousEventX = gamePanel.player.worldX;
+        previousEventY = gamePanel.player.worldY;
+        canTriggerEvent = false;
+        gamePanel.playEffect(13);
     }
 }
