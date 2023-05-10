@@ -9,7 +9,7 @@ public class OBJ_Rock extends Projectile{
 
         name = "Rock";
         speed = 7;
-        maxLife = 80;
+        maxLife = 45;
         life = maxLife;
         attack = 2;
         manaCost = 1;

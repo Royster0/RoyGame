@@ -22,7 +22,7 @@ public class MON_GreenSlime extends Entity {
         speed = 1;
         maxLife = 3;
         life = maxLife;
-        attack = 5;
+        attack = 3;
         defense = 0;
         exp = 2;
         projectile = new OBJ_Rock(gamePanel);
@@ -85,6 +85,6 @@ public class MON_GreenSlime extends Entity {
         // 70% chance for item drop. 30% for coin, 20% for either mana or heal
         if(i < 30) dropItem(new OBJ_Coin(gamePanel));
         if(i >= 30 && i < 50) dropItem(new OBJ_Heart(gamePanel));
-        if(i >= 50 && i <= 70) dropItem(new OBJ_Mana_Crystal(gamePanel));
+        if(i >= 50 && i <= 75) dropItem(new OBJ_Mana_Crystal(gamePanel));
     }
 }

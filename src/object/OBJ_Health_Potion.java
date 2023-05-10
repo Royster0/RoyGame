@@ -11,7 +11,7 @@ public class OBJ_Health_Potion extends Entity {
         super(gamePanel);
         this.gamePanel = gamePanel;
 
-        value = 3;
+        value = 2;
         type = type_consumable;
         name = "Health Potion";
         down1 = setup("objects/potion_red", gamePanel.tileSize, gamePanel.tileSize);
@@ -20,7 +20,7 @@ public class OBJ_Health_Potion extends Entity {
 
     public void use(Entity entity) {
         gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.ui.currentDialogue = "Your health has been \nrecovered by " + value;
+        gamePanel.ui.currentDialogue = "Your health has been \nrecovered by " + value/2;
         entity.life += value;
         gamePanel.playEffect(2);
     }

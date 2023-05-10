@@ -243,6 +243,7 @@ public class Entity {
                 double oneScale = (double) gamePanel.tileSize / maxLife;
                 double hpBarValue = oneScale * life;
 
+                if(hpBarValue <= 0) hpBarValue = 0;
                 graphics2D.setColor(new Color(35, 35, 35));
                 graphics2D.fillRect(cameraX - 1, cameraY - 6, gamePanel.tileSize + 2, 12);
 

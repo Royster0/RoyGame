@@ -22,6 +22,7 @@ public class UI {
     public int titleScreenState = 0;
     public int slotCol = 0;
     public int slotRow = 0;
+    int substate = 0;
 
     // CONSTRUCTOR
     public UI(GamePanel gamePanel) {
@@ -89,6 +90,10 @@ public class UI {
         if(gamePanel.gameState == gamePanel.characterState) {
             drawCharacterScreen();
             drawInventory();
+        }
+        // OPTIONS MENU
+        if(gamePanel.gameState == gamePanel.optionState) {
+            drawOptionsMenu();
         }
     }
 
@@ -428,6 +433,169 @@ public class UI {
             for(String line : gamePanel.player.inventory.get(itemIndex).description.split("\n")) {
                 g2d.drawString(line, textX, textY);
                 textY += 32;
+            }
+        }
+    }
+
+    public void drawOptionsMenu() {
+        g2d.setColor(Color.white);
+        g2d.setFont(g2d.getFont().deriveFont(65F));
+
+        int frameX = gamePanel.tileSize * 6;
+        int frameY = gamePanel.tileSize;
+        int frameWidth = gamePanel.tileSize * 8;
+        int frameHeight = gamePanel.tileSize * 10;
+
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        switch (substate) {
+            case 0 -> options_top(frameX, frameY);
+            case 1 -> options_controls(frameX, frameY);
+            case 2 -> options_endGameConfirm(frameX, frameY);
+        }
+
+        gamePanel.keyHandler.enterPressed = false;
+    }
+
+    public void options_top(int frameX, int frameY) {
+        // TITLE
+        String text = "Options";
+        int textX = getXCenteredText(text);
+        int textY = frameY + gamePanel.tileSize;
+        g2d.drawString(text, textX, textY);
+
+        // MUSIC
+        g2d.setFont(g2d.getFont().deriveFont(50F));
+        textX = frameX + gamePanel.tileSize;
+        textY += gamePanel.tileSize * 2;
+        g2d.drawString("Music", textX, textY);
+        if(commandNum == 0) g2d.drawString(">", textX - 25, textY);
+        // SOUND EFFECTS
+        textY += gamePanel.tileSize;
+        g2d.drawString("Effects", textX, textY);
+        if(commandNum == 1) g2d.drawString(">", textX - 25, textY);
+        // CONTROLS
+        textY += gamePanel.tileSize;
+        g2d.drawString("Controls", textX, textY);
+        if(commandNum == 2) {
+            g2d.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                substate = 1;
+                commandNum = 0;
+            }
+        }
+        // END GAME
+        textY += gamePanel.tileSize;
+        g2d.drawString("End Game", textX, textY);
+        if(commandNum == 3) {
+            g2d.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                substate = 2;
+                commandNum = 0;
+            }
+        }
+        // BACK
+        textY += gamePanel.tileSize * 2;
+        g2d.drawString("Back", textX, textY);
+        if(commandNum == 4) {
+            g2d.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                gamePanel.gameState = gamePanel.playState;
+                commandNum = 0;
+            }
+        }
+
+        // MUSIC SLIDER
+        textX = frameX + gamePanel.tileSize * 5;
+        textY = frameY + (gamePanel.tileSize * 2) + 30;
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawRect(textX, textY, 120, gamePanel.tileSize/2);
+        int volumeWidth = 24 * gamePanel.music.volumeScale;
+        g2d.fillRect(textX, textY, volumeWidth, gamePanel.tileSize/2);
+
+        // SOUND EFFECT SLIDER
+        textY += gamePanel.tileSize;
+        g2d.drawRect(textX, textY, 120, gamePanel.tileSize/2);
+        volumeWidth = 24 * gamePanel.soundEffect.volumeScale;
+        g2d.fillRect(textX, textY, volumeWidth, gamePanel.tileSize/2);
+
+        // LOAD CONFIG
+        gamePanel.config.saveConfig();
+    }
+
+    public void options_controls(int frameX, int frameY) {
+        String text = "Controls";
+        int textX = getXCenteredText(text);
+        int textY = frameY + gamePanel.tileSize;
+        g2d.setFont(g2d.getFont().deriveFont(50F));
+        g2d.drawString(text, textX, textY);
+
+        // LEFT SIDE
+        textX = frameX + gamePanel.tileSize;
+        textY += gamePanel.tileSize;
+        g2d.drawString("Move", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("Confirm/Attack", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("Shoot/Cast", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("Inventory", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("Pause", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("Options", textX, textY); textY += gamePanel.tileSize;
+
+        // RIGHT SIDE
+        textX = frameX + gamePanel.tileSize * 6;
+        textY = frameY + gamePanel.tileSize * 2;
+        g2d.drawString("WASD", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("ENTER", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("F", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("C", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("P", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("ESC", textX, textY); textY += gamePanel.tileSize;
+
+        // BACK BUTTON
+        textX = frameX + gamePanel.tileSize;
+        textY = frameY + gamePanel.tileSize * 9;
+        g2d.drawString("Back", textX, textY);
+        if(commandNum == 0) {
+            g2d.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                substate = 0;
+                commandNum = 2;
+            }
+        }
+    }
+
+    public void options_endGameConfirm(int frameX, int frameY) {
+        int textX = frameX + gamePanel.tileSize;
+        int textY = frameY + gamePanel.tileSize * 3;
+        g2d.setFont(g2d.getFont().deriveFont(50F));
+        currentDialogue = "Quit the game and \nreturn to title screen?";
+
+        for(String line : currentDialogue.split("\n")) {
+            g2d.drawString(line, textX, textY);
+            textY += 40;
+        }
+
+        //YES
+        String text = "Yes";
+        textX = getXCenteredText(text);
+        textY += gamePanel.tileSize * 3;
+        g2d.drawString(text, textX, textY);
+        if(commandNum == 0) {
+            g2d.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                substate = 0;
+                gamePanel.gameState = gamePanel.titleState;
+            }
+        }
+        // NO
+        text = "No";
+        textX = getXCenteredText(text);
+        textY += gamePanel.tileSize;
+        g2d.drawString(text, textX, textY);
+        if(commandNum == 1) {
+            g2d.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                substate = 0;
+                commandNum = 3;
             }
         }
     }

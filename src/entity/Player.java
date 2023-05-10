@@ -26,7 +26,7 @@ public class Player extends Entity {
         this.keyHandler = keyHandler;
 
         cameraX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
-        cameraY = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
+        cameraY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
 
         hitBox = new Rectangle(10, 16, 28, 32);
         hitBoxDefaultX = hitBox.x;
@@ -48,7 +48,7 @@ public class Player extends Entity {
 
         // PLAYER DEFAULT STATS
         level = 1;
-        maxLife = 8;
+        maxLife = 6;
         life = 6;
         maxMana = 4;
         mana = maxMana;
@@ -374,6 +374,7 @@ public class Player extends Entity {
             dexterity++;
             attack = getAttack();
             defense = getDefense();
+            life = maxLife;
 
             gamePanel.playEffect(8);
             gamePanel.gameState = gamePanel.dialogueState;

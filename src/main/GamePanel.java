@@ -16,9 +16,9 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3; // scale to size (will look 48x48px)
 
     public final int tileSize = originalTileSize * scale; // 48x48px
-    public final int maxScreenCol = 16; // max tile column size is 16
+    public final int maxScreenCol = 20; // max tile column size is 16
     public final int maxScreenRow = 12; // max tile row size is 12
-    public final int screenWidth = tileSize * maxScreenCol; // 768px
+    public final int screenWidth = tileSize * maxScreenCol; // 960px
     public final int screenHeight = tileSize * maxScreenRow; // 576px
 
     // World Settings
@@ -38,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetManager assManager = new AssetManager(this);
     public UI ui = new UI(this);
     public EventManager eventManager = new EventManager(this);
+    Config config = new Config(this);
     Thread gameThread;
 
     // Entity & Object
@@ -57,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pauseState = 2;
     public final int dialogueState = 3;
     public final int characterState = 4;
+    public final int optionState = 5;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
