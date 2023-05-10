@@ -25,13 +25,13 @@ public class AssetManager {
 
         // Axe
         gamePanel.objects[2] = new OBJ_Axe(gamePanel);
-        gamePanel.objects[2].worldX = gamePanel.tileSize * 33;
-        gamePanel.objects[2].worldY = gamePanel.tileSize * 21;
+        gamePanel.objects[2].worldX = gamePanel.tileSize * 37;
+        gamePanel.objects[2].worldY = gamePanel.tileSize * 8;
 
         // Blue Shield
         gamePanel.objects[3] = new OBJ_Shield_Upgrade(gamePanel);
         gamePanel.objects[3].worldX = gamePanel.tileSize * 35;
-        gamePanel.objects[3].worldY = gamePanel.tileSize * 21;
+        gamePanel.objects[3].worldY = gamePanel.tileSize * 39;
 
         // Health Potion
         gamePanel.objects[4] = new OBJ_Health_Potion(gamePanel);
@@ -76,12 +76,17 @@ public class AssetManager {
 
     public void setInteractiveTile() {
         int i = 0;
-        gamePanel.iTile[i] = new IT_DryTree(gamePanel, 27, 12); i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel, 28, 12); i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel, 29, 12); i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel, 30, 12); i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel, 31, 12); i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel, 32, 12); i++;
-        gamePanel.iTile[i] = new IT_DryTree(gamePanel, 33, 12);
+
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel, 12, 23); i++;
+
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel, 29, 20); i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel, 29, 21); i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel, 29, 22);
+
     }
 }

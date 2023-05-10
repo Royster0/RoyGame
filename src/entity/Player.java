@@ -49,7 +49,7 @@ public class Player extends Entity {
         // PLAYER DEFAULT STATS
         level = 1;
         maxLife = 6;
-        life = 1;
+        life = maxLife;
         maxMana = 4;
         mana = maxMana;
         strength = 1;
@@ -244,6 +244,8 @@ public class Player extends Entity {
 
         if(life <= 0) {
             gamePanel.gameState = gamePanel.gameOverState;
+            gamePanel.ui.commandNum = -1;
+            gamePanel.stopMusic();
             gamePanel.playEffect(12);
         }
     }

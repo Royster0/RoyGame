@@ -210,6 +210,7 @@ public class KeyHandler implements KeyListener {
             if(gamePanel.ui.commandNum == 0) {
                 gamePanel.gameState = gamePanel.playState;
                 gamePanel.retry();
+                gamePanel.playMusic(0);
             }
             else if(gamePanel.ui.commandNum == 1) {
                 gamePanel.gameState = gamePanel.titleState;
