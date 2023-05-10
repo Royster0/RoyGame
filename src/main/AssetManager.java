@@ -108,16 +108,15 @@ public class AssetManager {
 
         // Right dry tree
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 20); i++;
-        // gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 21); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 21); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 22); i++;
 
         // Shop dry trees
-        /*
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 17, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 16, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 15, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 14, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 39); i++;
-        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38); */
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38);
     }
 }
