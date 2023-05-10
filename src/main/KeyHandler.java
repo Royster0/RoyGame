@@ -36,6 +36,8 @@ public class KeyHandler implements KeyListener {
         else if(gamePanel.gameState == gamePanel.characterState) characterState(code);
         // OPTIONS MENU STATE
         else if(gamePanel.gameState == gamePanel.optionState) optionState(code);
+        // GAME OVER STATE
+        else if(gamePanel.gameState == gamePanel.gameOverState) gameOverState(code);
     }
 
     // When keypress happens in title screen
@@ -189,6 +191,29 @@ public class KeyHandler implements KeyListener {
                     gamePanel.soundEffect.volumeScale++;
                     gamePanel.playEffect(9);
                 }
+            }
+        }
+    }
+
+    public void gameOverState(int code) {
+        if(code == KeyEvent.VK_W) {
+            gamePanel.ui.commandNum--;
+            if(gamePanel.ui.commandNum < 0) gamePanel.ui.commandNum = 1;
+            gamePanel.playEffect(9);
+        }
+        if(code == KeyEvent.VK_S) {
+            gamePanel.ui.commandNum++;
+            if(gamePanel.ui.commandNum > 1) gamePanel.ui.commandNum = 0;
+            gamePanel.playEffect(9);
+        }
+        if(code == KeyEvent.VK_ENTER) {
+            if(gamePanel.ui.commandNum == 0) {
+                gamePanel.gameState = gamePanel.playState;
+                gamePanel.retry();
+            }
+            else if(gamePanel.ui.commandNum == 1) {
+                gamePanel.gameState = gamePanel.titleState;
+                gamePanel.restart();
             }
         }
     }

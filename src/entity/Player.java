@@ -49,7 +49,7 @@ public class Player extends Entity {
         // PLAYER DEFAULT STATS
         level = 1;
         maxLife = 6;
-        life = 6;
+        life = 1;
         maxMana = 4;
         mana = maxMana;
         strength = 1;
@@ -66,8 +66,21 @@ public class Player extends Entity {
         defense = getDefense();
     }
 
+    public void setDefaultPositions() {
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 21;
+        direction = "down";
+    }
+
+    public void restoreLifeMana() {
+        life = maxLife;
+        mana = maxMana;
+        invincible = false;
+    }
+
     // Sets the player's default items
     public void setItems() {
+        inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gamePanel));
@@ -75,8 +88,8 @@ public class Player extends Entity {
 
     // Player's attack calculation
     public int getAttack() {
-        attackArea = currentWeapon.attackArea;
-        return attack = strength * currentWeapon.attackValue;
+            attackArea = currentWeapon.attackArea;
+            return attack = strength * currentWeapon.attackValue;
     }
 
     // Player's defense calculation
@@ -228,6 +241,11 @@ public class Player extends Entity {
         // Prevent over-healing.
         if(life > maxLife) life = maxLife;
         if(mana > maxMana) mana = maxMana;
+
+        if(life <= 0) {
+            gamePanel.gameState = gamePanel.gameOverState;
+            gamePanel.playEffect(12);
+        }
     }
 
     // Player attacking animation and extending hitbox to sword

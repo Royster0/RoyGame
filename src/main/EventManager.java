@@ -46,7 +46,10 @@ public class EventManager {
         if(canTriggerEvent) {
             if(hit(27, 16, "right")) damagePit(27, 16, gamePanel.dialogueState);
             if(hit(23, 12, "up")) healingPool(23, 12, gamePanel.dialogueState);
-            // if(hit(27, 16, "right")) teleport(gamePanel.dialogueState);
+            if(hit(24, 12, "up")) healingPool(24, 12, gamePanel.dialogueState);
+            if(hit(22, 12, "up")) healingPool(22, 12, gamePanel.dialogueState);
+            if(hit(21, 12, "up")) healingPool(21, 12, gamePanel.dialogueState);
+            if(hit(25, 12, "up")) healingPool(25, 12, gamePanel.dialogueState);
         }
 
     }

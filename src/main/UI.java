@@ -1,5 +1,6 @@
 package main;
 
+import com.sun.source.tree.BreakTree;
 import entity.Entity;
 import object.OBJ_Heart;
 import object.OBJ_Mana_Crystal;
@@ -94,6 +95,10 @@ public class UI {
         // OPTIONS MENU
         if(gamePanel.gameState == gamePanel.optionState) {
             drawOptionsMenu();
+        }
+        // GAME OVER STATE
+        if(gamePanel.gameState == gamePanel.gameOverState) {
+            drawGameOver();
         }
     }
 
@@ -434,6 +439,42 @@ public class UI {
                 g2d.drawString(line, textX, textY);
                 textY += 32;
             }
+        }
+    }
+
+    public void drawGameOver() {
+        // Darken screen
+        g2d.setColor(new Color(0, 0, 0, 200));
+        g2d.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+
+        // Shadow
+        String text = "Wasted";
+        int x = getXCenteredText(text) - gamePanel.tileSize * 3;
+        int y = gamePanel.tileSize * 4;
+        g2d.setFont(g2d.getFont().deriveFont(180f));
+        g2d.setColor(Color.black);
+        g2d.drawString(text, x, y);
+        // Main text
+        g2d.setColor(Color.white);
+        g2d.drawString(text, x - 4, y - 4);
+
+        // Load Last Save
+        g2d.setFont(g2d.getFont().deriveFont(90f));
+        text = "Retry";
+        x += gamePanel.tileSize * 2;
+        y += gamePanel.tileSize * 4;
+        g2d.drawString(text, x, y);
+        if(commandNum == 0) {
+            g2d.drawString(">", x - 45, y);
+        }
+
+        // Back to Title Screen
+        text = "Quit";
+        x += 10;
+        y += 72;
+        g2d.drawString(text, x, y);
+        if(commandNum == 1) {
+            g2d.drawString(">", x - 45, y);
         }
     }
 
