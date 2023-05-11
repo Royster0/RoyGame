@@ -1,5 +1,7 @@
 package main;
 
+import entity.Entity;
+
 import java.awt.*;
 
 public class EventManager {
@@ -8,6 +10,7 @@ public class EventManager {
 
     // margin between events being able to trigger
     int previousEventX, previousEventY;
+    int tempMap, tempCol, tempRow;
     boolean canTriggerEvent = true;
 
     public EventManager(GamePanel gamePanel) {
@@ -61,6 +64,7 @@ public class EventManager {
             else if(hit(0, 13, 37, "any")) teleport(1, 12, 13);
             else if(hit(1, 12, 13, "any")) teleport(0, 13, 37);
 
+            else if(hit(1, 12, 9, "up")) speak(gamePanel.npc[1][0]);
         }
     }
 
@@ -114,12 +118,20 @@ public class EventManager {
     }
 
     public void teleport(int map, int col, int row) {
-        gamePanel.currentMap = map;
-        gamePanel.player.worldX = gamePanel.tileSize * col;
-        gamePanel.player.worldY = gamePanel.tileSize * row;
-        previousEventX = gamePanel.player.worldX;
-        previousEventY = gamePanel.player.worldY;
+        gamePanel.gameState = gamePanel.transitionState;
+        tempMap = map;
+        tempCol = col;
+        tempRow = row;
+
         canTriggerEvent = false;
         gamePanel.playEffect(13);
+    }
+
+    public void speak(Entity entity) {
+        if(gamePanel.keyHandler.enterPressed) {
+            gamePanel.gameState = gamePanel.dialogueState;
+            gamePanel.player.attackCanceled = true;
+            entity.speak();
+        }
     }
 }

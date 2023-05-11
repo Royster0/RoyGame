@@ -17,8 +17,6 @@ public class Player extends Entity {
     public final int cameraY;
     int positionCounter = 0;
     public boolean attackCanceled = false;
-    public ArrayList<Entity> inventory = new ArrayList<>();
-    public final int maxInventorySize = 20;
 
     // Constructor
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {

@@ -38,6 +38,8 @@ public class KeyHandler implements KeyListener {
         else if(gamePanel.gameState == gamePanel.optionState) optionState(code);
         // GAME OVER STATE
         else if(gamePanel.gameState == gamePanel.gameOverState) gameOverState(code);
+        // TRADE STATE
+        else if(gamePanel.gameState == gamePanel.tradeState) tradeState(code);
     }
 
     // When keypress happens in title screen
@@ -223,6 +225,22 @@ public class KeyHandler implements KeyListener {
             else if(gamePanel.ui.commandNum == 1) {
                 gamePanel.gameState = gamePanel.titleState;
                 gamePanel.restart();
+            }
+        }
+    }
+
+    public void tradeState(int code) {
+        if(code == KeyEvent.VK_ENTER) enterPressed = true;
+        if(gamePanel.ui.substate == 0) {
+            if(code == KeyEvent.VK_W) {
+                gamePanel.ui.commandNum--;
+                if(gamePanel.ui.commandNum < 0) gamePanel.ui.commandNum = 2;
+                gamePanel.playEffect(9);
+            }
+            if(code == KeyEvent.VK_S) {
+                gamePanel.ui.commandNum++;
+                if(gamePanel.ui.commandNum > 2) gamePanel.ui.commandNum = 0;
+                gamePanel.playEffect(9);
             }
         }
     }

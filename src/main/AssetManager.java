@@ -1,5 +1,6 @@
 package main;
 
+import entity.NPC_Merchant;
 import entity.NPC_WiseMan;
 import monster.MON_GreenSlime;
 import object.*;
@@ -47,6 +48,11 @@ public class AssetManager {
         gamePanel.npc[mapNum][0] = new NPC_WiseMan(gamePanel);
         gamePanel.npc[mapNum][0].worldX = gamePanel.tileSize * 21;
         gamePanel.npc[mapNum][0].worldY = gamePanel.tileSize * 21;
+
+        mapNum = 1;
+        gamePanel.npc[mapNum][0] = new NPC_Merchant(gamePanel);
+        gamePanel.npc[mapNum][0].worldX = gamePanel.tileSize * 12;
+        gamePanel.npc[mapNum][0].worldY = gamePanel.tileSize * 7;
     }
 
     public void setMonster() {
@@ -112,11 +118,11 @@ public class AssetManager {
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 22); i++;
 
         // Shop dry trees
-        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 17, 39); i++;
+        /*gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 17, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 16, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 15, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 14, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 39); i++;
-        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38);
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38); */
     }
 }

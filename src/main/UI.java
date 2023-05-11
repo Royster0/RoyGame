@@ -24,6 +24,8 @@ public class UI {
     public int slotCol = 0;
     public int slotRow = 0;
     int substate = 0;
+    int counter = 0;
+    public Entity npc;
 
     // CONSTRUCTOR
     public UI(GamePanel gamePanel) {
@@ -99,6 +101,14 @@ public class UI {
         // GAME OVER STATE
         if(gamePanel.gameState == gamePanel.gameOverState) {
             drawGameOver();
+        }
+        // TRANSITION
+        if(gamePanel.gameState == gamePanel.transitionState) {
+            drawTransition();
+        }
+        // TRADING STATE
+        if(gamePanel.gameState == gamePanel.tradeState) {
+            drawTradeScreen();
         }
     }
 
@@ -279,10 +289,10 @@ public class UI {
     // Draw the dialogue screen
     public void drawDialogueScreen() {
         // DIALOGUE WINDOW
-        int x = gamePanel.tileSize * 2;
-        int y = gamePanel.tileSize;
-        int width = gamePanel.screenWidth - (gamePanel.tileSize * 4);
-        int height = gamePanel.tileSize * 5;
+        int x = gamePanel.tileSize * 3;
+        int y = gamePanel.tileSize / 2;
+        int width = gamePanel.screenWidth - (gamePanel.tileSize * 6);
+        int height = gamePanel.tileSize * 4;
         drawSubWindow(x, y, width, height);
 
         x += gamePanel.tileSize;
@@ -639,6 +649,72 @@ public class UI {
                 commandNum = 3;
             }
         }
+    }
+
+    public void drawTransition() {
+        counter++;
+        g2d.setColor(new Color(0, 0, 0, counter * 5));
+        g2d.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+
+        if(counter == 40) {
+            counter = 0;
+            gamePanel.gameState = gamePanel.playState;
+            gamePanel.currentMap = gamePanel.eventManager.tempMap;
+            gamePanel.player.worldX = gamePanel.tileSize * gamePanel.eventManager.tempCol;
+            gamePanel.player.worldY = gamePanel.tileSize * gamePanel.eventManager.tempRow;
+            gamePanel.eventManager.previousEventX = gamePanel.player.worldX;
+            gamePanel.eventManager.previousEventY = gamePanel.player.worldY;
+        }
+    }
+
+    public void drawTradeScreen() {
+        switch(substate) {
+            case 0 -> trade_select();
+            case 1 -> trade_buy();
+            case 2 -> trade_sell();
+        }
+        gamePanel.keyHandler.enterPressed = false;
+    }
+
+    public void trade_select() {
+        drawDialogueScreen();
+
+        int x = gamePanel.tileSize * 15;
+        int y = gamePanel.tileSize * 6;
+        int width = gamePanel.tileSize * 3;
+        int height = gamePanel.tileSize * 4;
+        drawSubWindow(x, y, width, height);
+
+        // DRAW OPTIONS
+        x += gamePanel.tileSize;
+        y += gamePanel.tileSize;
+        g2d.drawString("Buy", x, y);
+        if(commandNum == 0) {
+            g2d.drawString(">", x - 25, y);
+            if(gamePanel.keyHandler.enterPressed) substate = 1;
+        }
+        y += gamePanel.tileSize;
+        g2d.drawString("Sell", x, y);
+        if(commandNum == 1) {
+            g2d.drawString(">", x - 25, y);
+            if(gamePanel.keyHandler.enterPressed) substate = 2;
+        }
+        y += gamePanel.tileSize;
+        g2d.drawString("Leave", x, y);
+        if(commandNum == 2) {
+            g2d.drawString(">", x - 25, y);
+            commandNum = 0;
+            gamePanel.gameState = gamePanel.dialogueState;
+            currentDialogue = "Farewell, see you again.";
+        }
+    }
+
+    public void trade_buy() {
+
+    }
+
+    public void trade_sell() {
+
     }
 
     public int getItemIndex() {
