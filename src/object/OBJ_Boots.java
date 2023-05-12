@@ -10,5 +10,6 @@ public class OBJ_Boots extends Entity {
 
         name = "Boots";
         down1 = setup("objects/boots", gamePanel.tileSize, gamePanel.tileSize);
+        price = 20;
     }
 }

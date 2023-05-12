@@ -13,5 +13,6 @@ public class OBJ_Shield_Upgrade extends Entity{
         down1 = setup("objects/shield_blue", gamePanel.tileSize, gamePanel.tileSize);
         defenseValue = 2;
         description = "[" + name + "]\nA shiny new shield";
+        price = 35;
     }
 }

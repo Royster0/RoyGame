@@ -1,7 +1,7 @@
 package main;
 
-import com.sun.source.tree.BreakTree;
 import entity.Entity;
+import object.OBJ_Coin;
 import object.OBJ_Heart;
 import object.OBJ_Mana_Crystal;
 
@@ -15,14 +15,16 @@ public class UI {
     GamePanel gamePanel;
     Graphics2D g2d;
     Font litebulb_arcade, purisaB;
-    BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank;
+    BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank, coin;
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
     public String currentDialogue;
     public int commandNum = 0;
     public int titleScreenState = 0;
-    public int slotCol = 0;
-    public int slotRow = 0;
+    public int playerSlotCol = 0;
+    public int playerSlotRow = 0;
+    public int npcSlotCol = 0;
+    public int npcSlotRow = 0;
     int substate = 0;
     int counter = 0;
     public Entity npc;
@@ -51,6 +53,8 @@ public class UI {
         Entity crystal = new OBJ_Mana_Crystal(gamePanel);
         crystal_full = crystal.image;
         crystal_blank = crystal.image2;
+        Entity bronzeCoin = new OBJ_Coin(gamePanel);
+        coin = bronzeCoin.down1;
     }
 
     // Add a new message the message list, will be printed on screen
@@ -92,7 +96,7 @@ public class UI {
         // CHARACTER STATE
         if(gamePanel.gameState == gamePanel.characterState) {
             drawCharacterScreen();
-            drawInventory();
+            drawInventory(gamePanel.player, true);
         }
         // OPTIONS MENU
         if(gamePanel.gameState == gamePanel.optionState) {
@@ -346,12 +350,12 @@ public class UI {
         g2d.drawString(value, textX, textY);
         textY += lineHeight;
 
-        value = String.valueOf(gamePanel.player.life + "/" + gamePanel.player.maxLife);
+        value = gamePanel.player.life + "/" + gamePanel.player.maxLife;
         textX = getXAlignRightText(value, tailX);
         g2d.drawString(value, textX, textY);
         textY += lineHeight;
 
-        value = String.valueOf(gamePanel.player.mana + "/" + gamePanel.player.maxMana);
+        value = gamePanel.player.mana + "/" + gamePanel.player.maxMana;
         textX = getXAlignRightText(value, tailX);
         g2d.drawString(value, textX, textY);
         textY += lineHeight;
@@ -397,12 +401,32 @@ public class UI {
     }
 
     // Draw inventory
-    public void drawInventory() {
+    public void drawInventory(Entity entity, boolean cursor) {
+
+        int frameX;
+        int frameY;
+        int frameWidth;
+        int frameHeight;
+        int slotCol;
+        int slotRow;
+
+        if(entity == gamePanel.player) {
+            frameX = gamePanel.tileSize * 9;
+            frameY = gamePanel.tileSize;
+            frameWidth = gamePanel.tileSize * 6;
+            frameHeight = gamePanel.tileSize * 5;
+            slotCol = playerSlotCol;
+            slotRow = playerSlotRow;
+        } else {
+            frameX = gamePanel.tileSize * 2;
+            frameY = gamePanel.tileSize;
+            frameWidth = gamePanel.tileSize * 6;
+            frameHeight = gamePanel.tileSize * 5;
+            slotCol = npcSlotCol;
+            slotRow = npcSlotRow;
+        }
+
         // FRAME
-        int frameX = gamePanel.tileSize * 9;
-        int frameY = gamePanel.tileSize;
-        int frameWidth = gamePanel.tileSize * 6;
-        int frameHeight = gamePanel.tileSize * 5;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
         // SLOT
         final int slotXStart = frameX + 20;
@@ -411,14 +435,14 @@ public class UI {
         int slotY = slotYStart;
         int slotSize = gamePanel.tileSize + 3;
         // DRAW ITEMS
-        for(int i = 0; i < gamePanel.player.inventory.size(); i++) {
+        for(int i = 0; i < entity.inventory.size(); i++) {
             // EQUIP CURSOR
-            if(gamePanel.player.inventory.get(i) == gamePanel.player.currentWeapon ||
-                    gamePanel.player.inventory.get(i) == gamePanel.player.currentShield) {
+            if(entity.inventory.get(i) == entity.currentWeapon ||
+                    entity.inventory.get(i) == entity.currentShield) {
                 g2d.setColor(new Color(217, 174, 92));
                 g2d.fillRoundRect(slotX, slotY, gamePanel.tileSize, gamePanel.tileSize, 10, 10);
             }
-            g2d.drawImage(gamePanel.player.inventory.get(i).down1, slotX, slotY, null);
+            g2d.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
             slotX += slotSize;
             // if i reaches edge case, reset x, increment y's height to add tilesize.
             if(i == 4 || i == 9 || i == 14) {
@@ -427,27 +451,29 @@ public class UI {
             }
         }
         //CURSOR
-        int cursorX = slotXStart + (slotSize * slotCol);
-        int cursorY = slotYStart + (slotSize * slotRow);
-        int cursorWt = gamePanel.tileSize;
-        int cursorHt = gamePanel.tileSize;
-        // DRAW CURSOR
-        g2d.setColor(Color.white);
-        g2d.setStroke(new BasicStroke(3));
-        g2d.drawRoundRect(cursorX, cursorY, cursorWt, cursorHt, 10, 10);
-        // ITEM DESCRIPTION FRAME
-        int dFrameY = frameY + frameHeight;
-        int dFrameHeight = gamePanel.tileSize * 3;
-        // DRAW ITEM DESCRIPTION
-        int textX = frameX + 20;
-        int textY = dFrameY + 30;
-        int itemIndex = getItemIndex();
-        g2d.setFont(g2d.getFont().deriveFont(35F));
-        if(itemIndex < gamePanel.player.inventory.size()) {
-            drawSubWindow(frameX, dFrameY, frameWidth, dFrameHeight);
-            for(String line : gamePanel.player.inventory.get(itemIndex).description.split("\n")) {
-                g2d.drawString(line, textX, textY);
-                textY += 32;
+        if(cursor) {
+            int cursorX = slotXStart + (slotSize * slotCol);
+            int cursorY = slotYStart + (slotSize * slotRow);
+            int cursorWt = gamePanel.tileSize;
+            int cursorHt = gamePanel.tileSize;
+            // DRAW CURSOR
+            g2d.setColor(Color.white);
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawRoundRect(cursorX, cursorY, cursorWt, cursorHt, 10, 10);
+            // ITEM DESCRIPTION FRAME
+            int dFrameY = frameY + frameHeight;
+            int dFrameHeight = gamePanel.tileSize * 3;
+            // DRAW ITEM DESCRIPTION
+            int textX = frameX + 20;
+            int textY = dFrameY + 30;
+            int itemIndex = getItemIndex(slotCol, slotRow);
+            g2d.setFont(g2d.getFont().deriveFont(35F));
+            if(itemIndex < entity.inventory.size()) {
+                drawSubWindow(frameX, dFrameY, frameWidth, dFrameHeight);
+                for(String line : entity.inventory.get(itemIndex).description.split("\n")) {
+                    g2d.drawString(line, textX, textY);
+                    textY += 32;
+                }
             }
         }
     }
@@ -589,7 +615,7 @@ public class UI {
         g2d.drawString("Shoot/Cast", textX, textY); textY += gamePanel.tileSize;
         g2d.drawString("Inventory", textX, textY); textY += gamePanel.tileSize;
         g2d.drawString("Pause", textX, textY); textY += gamePanel.tileSize;
-        g2d.drawString("Options", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("Options", textX, textY);
 
         // RIGHT SIDE
         textX = frameX + gamePanel.tileSize * 6;
@@ -599,7 +625,7 @@ public class UI {
         g2d.drawString("F", textX, textY); textY += gamePanel.tileSize;
         g2d.drawString("C", textX, textY); textY += gamePanel.tileSize;
         g2d.drawString("P", textX, textY); textY += gamePanel.tileSize;
-        g2d.drawString("ESC", textX, textY); textY += gamePanel.tileSize;
+        g2d.drawString("ESC", textX, textY);
 
         // BACK BUTTON
         textX = frameX + gamePanel.tileSize;
@@ -710,14 +736,113 @@ public class UI {
     }
 
     public void trade_buy() {
+        // DRAW PLAYER INVENTORY IN BUY MENU
+        drawInventory(gamePanel.player, false);
+        //DRAW NPC INVENTORY IN BUY MENU
+        drawInventory(npc, true);
 
+        // DRAW HINT WINDOW
+        int x = gamePanel.tileSize * 2;
+        int y = gamePanel.tileSize * 9;
+        int width = gamePanel.tileSize * 6;
+        int height = gamePanel.tileSize * 2;
+        drawSubWindow(x, y, width, height);
+        g2d.setFont(g2d.getFont().deriveFont(54F));
+        g2d.drawString("[ESC] Back", x + 23, y + 58);
+
+        // DRAW PLAYER'S COINS
+        x = gamePanel.tileSize * 12;
+        drawSubWindow(x, y, width, height);
+        g2d.drawString("Coins: " + gamePanel.player.coin, x + 23, y + 58);
+
+        // DRAW PRICE
+        int itemIndex = getItemIndex(npcSlotCol, npcSlotRow);
+        if(itemIndex < npc.inventory.size()) {
+            x = gamePanel.tileSize * 5;
+            y = gamePanel.tileSize * 5;
+            width = gamePanel.tileSize * 3;
+            height = gamePanel.tileSize;
+            drawSubWindow(x, y, width, height);
+            g2d.drawImage(coin, x + 10, y + 7, 32, 32, null);
+
+            int price = npc.inventory.get(itemIndex).price;
+            String text = String.valueOf(price);
+            x = getXAlignRightText(text, gamePanel.tileSize * 8);
+            g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 38F));
+            g2d.drawString(text, x - 8, y + 31);
+
+            if(gamePanel.keyHandler.enterPressed) {
+                if(npc.inventory.get(itemIndex).price > gamePanel.player.coin) {
+                    substate = 0;
+                    gamePanel.gameState = gamePanel.dialogueState;
+                    currentDialogue = "You need more money\nbum";
+                    drawDialogueScreen();
+                }
+                else if(gamePanel.player.inventory.size() == gamePanel.player.maxInventorySize) {
+                    substate = 0;
+                    gamePanel.gameState = gamePanel.dialogueState;
+                    currentDialogue = "Your backpack is full! \nHow are you gonna carry it!";
+                    drawDialogueScreen();
+                } else {
+                    gamePanel.player.coin -= npc.inventory.get(itemIndex).price;
+                    gamePanel.player.inventory.add(npc.inventory.get(itemIndex));
+                }
+            }
+        }
     }
 
     public void trade_sell() {
+        // DRAW PLAYER INVENTORY
+        drawInventory(gamePanel.player, true);
 
+        // DRAW HINT
+        int x = gamePanel.tileSize * 2;
+        int y = gamePanel.tileSize * 9;
+        int width = gamePanel.tileSize * 6;
+        int height = gamePanel.tileSize * 2;
+        drawSubWindow(x, y, width, height);
+        g2d.setFont(g2d.getFont().deriveFont(54F));
+        g2d.drawString("[ESC] Back", x + 23, y + 58);
+
+        // DRAW PLAYER'S COINS
+        x = gamePanel.tileSize * 9;
+        drawSubWindow(x, y, width, height);
+        g2d.drawString("Coins: " + gamePanel.player.coin, x + 23, y + 58);
+
+        // DRAW PRICE
+        int itemIndex = getItemIndex(playerSlotCol, playerSlotRow);
+        if(itemIndex < gamePanel.player.inventory.size()) {
+            x = gamePanel.tileSize * 12;
+            y = gamePanel.tileSize * 5;
+            width = gamePanel.tileSize * 3;
+            height = gamePanel.tileSize;
+            drawSubWindow(x, y, width, height);
+            g2d.drawImage(coin, x + 7, y + 8, 32, 32, null);
+
+            int price = gamePanel.player.inventory.get(itemIndex).price;
+            price -= (price / 3); // sell price is 2/3 the value of buy price
+            String text = String.valueOf(price);
+            x = getXAlignRightText(text, gamePanel.tileSize * 14 + 20);
+            g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 38F));
+            g2d.drawString(text, x - 18, y + 31);
+
+            // KeyHandler Sell Item
+            if(gamePanel.keyHandler.enterPressed) {
+                if(gamePanel.player.inventory.get(itemIndex) == gamePanel.player.currentShield ||
+                        gamePanel.player.inventory.get(itemIndex) == gamePanel.player.currentWeapon) {
+                    commandNum = 0;
+                    substate = 0;
+                    gamePanel.gameState = gamePanel.dialogueState;
+                    currentDialogue = "You have that equipped!";
+                } else {
+                    gamePanel.player.inventory.remove(itemIndex);
+                    gamePanel.player.coin += price;
+                }
+            }
+        }
     }
 
-    public int getItemIndex() {
+    public int getItemIndex(int slotCol, int slotRow) {
         return slotCol + (slotRow * 5); // returns item index in ArrayList
     }
 
@@ -739,7 +864,6 @@ public class UI {
 
     public int getXAlignRightText(String text, int tailX) {
         int length = (int) g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
-        int x = tailX - length;
-        return x;
+        return tailX - length;
     }
 }

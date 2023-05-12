@@ -75,11 +75,12 @@ public class Entity {
     public int defenseValue;
     public String description = "";
     public int manaCost;
+    public int price;
 
     // TYPE OF ENTITY
     public int type;
-    public final int type_player = 0;
-    public final int type_npc = 1;
+    // public final int type_player = 0;
+    // public final int type_npc = 1;
     public final int type_monster = 2;
     public final int type_sword = 3;
     public final int type_axe = 4;

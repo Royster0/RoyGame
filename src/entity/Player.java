@@ -9,7 +9,6 @@ import object.OBJ_Sword_Normal;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class Player extends Entity {
     KeyHandler keyHandler;
@@ -54,7 +53,7 @@ public class Player extends Entity {
         dexterity = 1;
         exp = 0;
         nextLevelExp = 5;
-        coin = 0;
+        coin = 20;
 
         // PLAYER DEFAULT WEAPONS
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
@@ -402,7 +401,7 @@ public class Player extends Entity {
 
     // Selecting and updating new item in inventory.
     public void selectItem() {
-        int itemIndex = gamePanel.ui.getItemIndex();
+        int itemIndex = gamePanel.ui.getItemIndex(gamePanel.ui.playerSlotCol, gamePanel.ui.playerSlotRow);
         if(itemIndex < inventory.size()) {
             Entity selectedItem = inventory.get(itemIndex);
 
