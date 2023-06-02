@@ -9,17 +9,20 @@ import object.OBJ_Rock;
 
 import java.util.Random;
 
+// Green slime monster
 public class MON_GreenSlime extends Entity {
 
     GamePanel gamePanel;
 
+    // Initialize all values
     public MON_GreenSlime(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
 
         name = "Green Slime";
         type = type_monster;
-        speed = 1;
+        defaultSpeed = 1;
+        speed = defaultSpeed;
         maxLife = 3;
         life = maxLife;
         attack = 3;
@@ -37,6 +40,7 @@ public class MON_GreenSlime extends Entity {
         getImage();
     }
 
+    // Setting up images
     public void getImage() {
         up1 = setup("monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
         up2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
@@ -48,36 +52,84 @@ public class MON_GreenSlime extends Entity {
         right2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
     }
 
-    @Override
-    public void setAction() {
-        actionInterval++;
+    // Slime update aggressiveness
+    public void update() {
+        super.update();
 
-        if(actionInterval == 120) {
-            Random random = new Random();
-            int i = random.nextInt(100) + 1; // random from 1-100
+        int xDist = Math.abs(worldX - gamePanel.player.worldX);
+        int yDist = Math.abs(worldY - gamePanel.player.worldY);
+        int tileDist = (xDist + yDist) / gamePanel.tileSize;
 
-            if(i <= 25) direction = "up";
-            if(i > 25 && i <= 50) direction = "down";
-            if(i > 50 && i <= 75) direction = "left";
-            if(i > 75) direction = "right";
-
-            actionInterval = 0;
+        // if player comes into distance, becomes aggro
+        if(!onPath && tileDist < 5) {
+            int i = new Random().nextInt(100) + 1;
+            if(i > 50) {
+                onPath = true;
+            }
         }
 
-        int i = new Random().nextInt(100) + 1;
-        if(i > 99 && !projectile.alive && shotAvailableCounter == 30) {
-            projectile.set(worldX, worldY, direction, true, this);
-            gamePanel.projectileList.add(projectile);
-            shotAvailableCounter = 0;
+        // if player leaves range, de-aggro
+        if(onPath && tileDist > 10) {
+            onPath = false;
         }
     }
 
+    // Sets green slime action
+    @Override
+    public void setAction() {
+        if(onPath) {
+            int goalCol = (gamePanel.player.worldX + gamePanel.player.hitBox.x) / gamePanel.tileSize;
+            int goalRow = (gamePanel.player.worldY + gamePanel.player.hitBox.y) / gamePanel.tileSize;
+
+            searchPath(goalCol, goalRow);
+
+            int i = new Random().nextInt(200) + 1;
+
+            if(i > 197 && !projectile.alive && shotAvailableCounter == 30) {
+                projectile.set(worldX, worldY, direction, true, this);
+
+                // check for vacancy
+                for(int j = 0; j < gamePanel.projectile[1].length; j++) {
+                    if(gamePanel.projectile[gamePanel.currentMap][j] == null) {
+                        gamePanel.projectile[gamePanel.currentMap][j] = projectile;
+                        break;
+                    }
+                }
+
+                shotAvailableCounter = 0;
+            }
+        } else {
+            actionInterval++;
+
+            if(actionInterval == 120) {
+                Random random = new Random();
+                int i = random.nextInt(100) + 1;
+
+                if(i <= 25) {
+                    direction = "up";
+                }
+                if(i > 25 && i <= 50) {
+                    direction = "down";
+                }
+                if(i > 50 && i <= 75) {
+                    direction = "left";
+                }
+                if(i > 75) {
+                    direction = "right";
+                }
+                actionInterval = 0;
+            }
+        }
+    }
+
+    // Reaction to damage
     @Override
     public void damageReaction() {
         actionInterval = 0;
-        direction = gamePanel.player.direction;
+        onPath = true; // become aggro to player on damage.
     }
 
+    // Item drops from green slime.
     @Override
     public void checkDrop() {
         int i = new Random().nextInt(100) + 1;

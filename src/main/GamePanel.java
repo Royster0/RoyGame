@@ -1,15 +1,19 @@
 package main;
 
+// Import local packages
+import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
 import tile.TileManager;
 import tiles_interactive.InteractiveTiles;
 
+// Import java utilities
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+// GamePanel class. Central class for handling the bulk of the game operations.
 public class GamePanel extends JPanel implements Runnable {
     // Screen Settings
     final int originalTileSize = 16; // 16x16px tiles
@@ -32,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     int drawCount;
 
     // System
-    TileManager tileManager = new TileManager(this);
+    public TileManager tileManager = new TileManager(this);
     public KeyHandler keyHandler = new KeyHandler(this);
     Sound soundEffect = new Sound();
     Sound music = new Sound();
@@ -41,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable {
     public UI ui = new UI(this);
     public EventManager eventManager = new EventManager(this);
     Config config = new Config(this);
+    public PathFinder pFinder = new PathFinder(this);
     Thread gameThread;
 
     // Entity & Object
@@ -49,7 +54,8 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] npc = new Entity[maxMap][10];
     public Entity[][] monster = new Entity[maxMap][20];
     public InteractiveTiles[][] iTile = new InteractiveTiles[maxMap][50];
-    public ArrayList<Entity> projectileList = new ArrayList<>();
+    // public ArrayList<Entity> projectileList = new ArrayList<>();
+    public Entity[][] projectile = new Entity[maxMap][20];
     public ArrayList<Entity> particleList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>(); // entity render order
 
@@ -65,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int transitionState = 7;
     public final int tradeState = 8;
 
+    // GamePanel constructor. Initializes screen and key listener.
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -73,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
+    // Initialize the assets and spawns entities.
     public void setupGame() {
         assManager.setObject();
         assManager.setNPC();
@@ -81,6 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = titleState;
     }
 
+    // Retry screen after death
     public void retry() {
         player.setDefaultPositions();
         player.restoreLifeMana();
@@ -88,6 +97,7 @@ public class GamePanel extends JPanel implements Runnable {
         assManager.setMonster();
     }
 
+    // Restart
     public void restart() {
         player.setDefaultValues();
         player.setItems();
@@ -97,11 +107,13 @@ public class GamePanel extends JPanel implements Runnable {
         assManager.setInteractiveTile();
     }
 
+    // Starting the game thread.
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    // Game loop. Overrides from runnable.
     @Override
     public void run() {
         double drawInterval = (double) 1000000000 / FPS;
@@ -132,6 +144,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
 
+    // Update method that updates player position and entity spawning per frame.
     public void update() {
         if(gameState == playState) {
             // PLAYER
@@ -158,9 +171,11 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // PROJECTILE
-            for(int i = 0; i < projectileList.size(); i++) {
-                if(projectileList.get(i).alive) projectileList.get(i).update();
-                if(!projectileList.get(i).alive) projectileList.remove(i);
+            for(int i = 0; i < projectile[1].length; i++) {
+                if(projectile[currentMap][i] != null) {
+                    if(projectile[currentMap][i].alive) projectile[currentMap][i].update();
+                    if(!projectile[currentMap][i].alive) projectile[currentMap][i] = null;
+                }
             }
 
             // PARTICLES
@@ -187,6 +202,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // Paints components onto the screen using Graphics2D. Override from JComponent.
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
@@ -221,12 +237,14 @@ public class GamePanel extends JPanel implements Runnable {
                 if(monster[currentMap][i] != null) entityList.add(monster[currentMap][i]);
             }
             // ADD PROJECTILES
-            for(Entity projectile : projectileList) {
-                if(projectile != null) entityList.add(projectile);
+            for(int i = 0; i < projectile[1].length; i++) {
+                if(projectile[currentMap][i] != null) {
+                    entityList.add(projectile[currentMap][i]);
+                }
             }
             // ADD PARTICLES
-            for(Entity particle : particleList) {
-                if(particle != null) entityList.add(particle);
+            for (Entity currPart : particleList) {
+                if (currPart != null) entityList.add(currPart);
             }
 
             // SORT ENTITIES BASED ON THEIR WORLD Y

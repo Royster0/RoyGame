@@ -16,6 +16,7 @@ public class TileManager {
     GamePanel gamePanel;
     public Tile[] tile;
     public int[][][] mapTileNum;
+    public boolean drawPath = true;
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -152,5 +153,17 @@ public class TileManager {
             }
         }
 
+        if(drawPath) {
+            graphics2D.setColor(new Color(255, 0, 0, 60));
+
+            for(int i = 0; i < gamePanel.pFinder.pathList.size(); i++) {
+                int worldX = gamePanel.pFinder.pathList.get(i).col * gamePanel.tileSize;
+                int worldY = gamePanel.pFinder.pathList.get(i).row * gamePanel.tileSize;
+                int screenX = worldX - gamePanel.player.worldX + gamePanel.player.cameraX;
+                int screenY = worldY - gamePanel.player.worldY + gamePanel.player.cameraY;
+
+                graphics2D.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+            }
+        }
     }
 }

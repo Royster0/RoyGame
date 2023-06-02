@@ -2,14 +2,17 @@ package main;
 
 import entity.Entity;
 
+// Manages all the collision in the game.
 public class CollisionManager {
 
     GamePanel gamePanel;
 
+    // Constructor that passes in GamePanel.
     public CollisionManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
+    // Checks the tiles and if it is colliding with entities.
     public void checkTile(Entity entity) {
         int entityLeftWorldX = entity.worldX + entity.hitBox.x;
         int entityRightWorldX = entity.worldX + entity.hitBox.x + entity.hitBox.width;
@@ -59,6 +62,7 @@ public class CollisionManager {
         }
     }
 
+    // Retrieving index
     public int checkObject(Entity entity, boolean player) {
         int index = 999;
 

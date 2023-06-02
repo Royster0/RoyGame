@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// Entity class that parents all the entities in the game.
 public class Entity {
 
     GamePanel gamePanel;
@@ -39,6 +40,8 @@ public class Entity {
     public boolean alive = true;
     public boolean dying = false;
     public boolean hpBarOn = false;
+    public boolean onPath = false;
+    public boolean knockback = false;
 
     // COUNTERS
     public int spriteCounter = 0;
@@ -47,9 +50,11 @@ public class Entity {
     public int shotAvailableCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
+    int knockbackCounter = 0;
 
     // CHARACTER STATUS
     public String name;
+    public int defaultSpeed;
     public int speed;
     public int maxLife;
     public int life;
@@ -76,11 +81,10 @@ public class Entity {
     public String description = "";
     public int manaCost;
     public int price;
+    public int knockbackPower = 0;
 
     // TYPE OF ENTITY
     public int type;
-    // public final int type_player = 0;
-    // public final int type_npc = 1;
     public final int type_monster = 2;
     public final int type_sword = 3;
     public final int type_axe = 4;
@@ -88,14 +92,18 @@ public class Entity {
     public final int type_consumable = 6;
     public final int type_pickup = 7;
 
+    // Entity constructor that initializes a GamePanel instance.
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
+    // Sets actions for other entities to override.
     public void setAction() {}
 
+    // Damage reaction method for other entities to react to damage.
     public void damageReaction() {}
 
+    // Method for other entities to have dialogue.
     public void speak() {
         // reset dialogue if there is no dialogue left
         if(dialogues[dialogueIndex] == null) {
@@ -113,10 +121,13 @@ public class Entity {
         }
     }
 
+    // Method to allow other entities to use an object.
     public void use(Entity entity) {}
 
+    // Check drop method to allow other entities to drop items.
     public void checkDrop() {}
 
+    // Drop an item on the map where they die.
     public void dropItem(Entity droppedItem) {
         for(int i = 0; i < gamePanel.objects[1].length; i++) {
             if(gamePanel.objects[gamePanel.currentMap][i] == null) {
@@ -128,9 +139,8 @@ public class Entity {
         }
     }
 
-    public void update() {
-        setAction();
-
+    // Checking collision with other NPCs, monsters, tiles and player.
+    public void checkCollision() {
         collisionOn = false;
         gamePanel.collision.checkTile(this);
         gamePanel.collision.checkObject(this, false);
@@ -143,14 +153,46 @@ public class Entity {
         if(this.type == type_monster && contactedPlayer) {
             damagePlayer(attack);
         }
+    }
 
-        // If no collision, move
-        if(!collisionOn) {
-            switch (direction) {
-                case "up" -> worldY -= speed;
-                case "down" -> worldY += speed;
-                case "left" -> worldX -= speed;
-                case "right" -> worldX += speed;
+    // Entity update method that checks collision and redirects if colliding.
+    public void update() {
+
+        if(knockback) {
+            checkCollision();
+
+            if(collisionOn) {
+                knockbackCounter = 0;
+                knockback = false;
+                speed = defaultSpeed;
+            }
+            else if(!collisionOn) {
+                switch(gamePanel.player.direction) {
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
+                }
+            }
+            knockbackCounter++;
+            if(knockbackCounter == 5) {
+                knockbackCounter = 0;
+                knockback = false;
+                speed = defaultSpeed;
+            }
+
+        } else {
+            setAction();
+            checkCollision();
+
+            // If no collision, move
+            if(!collisionOn) {
+                switch (direction) {
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
+                }
             }
         }
 
@@ -186,6 +228,7 @@ public class Entity {
         }
     }
 
+    // Retrieves a particle color. Mainly used in interactive Tiles.
     public Color getParticleColor() { return null; }
 
     // Returns size of particle in pixels
@@ -194,8 +237,10 @@ public class Entity {
     // Speed of animation of particle
     public int getParticleSpeed() { return 0; }
 
+    // Returns the max life-span of a particle.
     public int getParticleMaxLife() { return 0; }
 
+    // Creates a new particle to display on the screen.
     public void generateParticle(Entity generator, Entity target) {
         Color color = generator.getParticleColor();
         int size = generator.getParticleSize();
@@ -212,6 +257,7 @@ public class Entity {
         gamePanel.particleList.add(p4);
     }
 
+    // Drawing the entity relative to player and world.
     public void draw(Graphics2D graphics2D) {
         BufferedImage image = null;
 
@@ -275,6 +321,7 @@ public class Entity {
         }
     }
 
+    // Dying animation for the entity.
     public void dyingAnimation(Graphics2D graphics2D) {
         dyingCounter++;
         int i = 5; // interval
@@ -290,10 +337,12 @@ public class Entity {
         }
     }
 
+    // Changes the transparency of an entity.
     public void changeAlpha(Graphics2D graphics2D, float alpha) {
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
     }
 
+    // Allows for automation of importing and scaling images.
     public BufferedImage setup(String imagePath, int width, int height) {
         UtilityTool uTool = new UtilityTool();
         BufferedImage image = null;
@@ -305,5 +354,60 @@ public class Entity {
             e.printStackTrace();
         }
         return image;
+    }
+
+    // Path finding for an entity using the A* algorithm.
+    public void searchPath(int goalCol, int goalRow) {
+        int startCol = (worldX + hitBox.x) / gamePanel.tileSize;
+        int startRow = (worldY + hitBox.y) / gamePanel.tileSize;
+
+        gamePanel.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
+
+        if(gamePanel.pFinder.search()) {
+            // Next world X and world Y
+            int nextX = gamePanel.pFinder.pathList.get(0).col * gamePanel.tileSize;
+            int nextY = gamePanel.pFinder.pathList.get(0).row * gamePanel.tileSize;
+
+            // Entity's hitbox position
+            int entLeftX = worldX + hitBox.x;
+            int entRightX = worldX + hitBox.x + hitBox.width;
+            int entTopY = worldY + hitBox.y;
+            int entBottomY = worldY + hitBox.y + hitBox.height;
+
+            if(entTopY > nextY && entLeftX >= nextX && entRightX < nextX + gamePanel.tileSize) {
+                direction = "up";
+
+            } else if(entTopY < nextY && entLeftX >= nextX && entRightX < nextX + gamePanel.tileSize) {
+                direction = "down";
+
+            } else if(entTopY >= nextY && entBottomY < nextY + gamePanel.tileSize) {
+                if(entLeftX > nextX) direction = "left";
+                if(entLeftX < nextX) direction = "right";
+
+            } else if(entTopY > nextY && entLeftX > nextX) {
+                direction = "up";
+                checkCollision();
+                if(collisionOn) direction = "left";
+
+            } else if(entTopY > nextY && entLeftX < nextX) {
+                direction = "up";
+                checkCollision();
+                if(collisionOn) direction = "right";
+
+            } else if(entTopY < nextY && entLeftX > nextX) {
+                direction = "down";
+                checkCollision();
+                if(collisionOn) direction = "left";
+
+            } else if(entTopY < nextY && entLeftX < nextX) {
+                direction = "down";
+                checkCollision();
+                if(collisionOn) direction = "right";
+            }
+
+            int nextCol = gamePanel.pFinder.pathList.get(0).col;
+            int nextRow = gamePanel.pFinder.pathList.get(0).row;
+            if(nextCol == goalCol && nextRow == goalRow) onPath = false;
+        }
     }
 }

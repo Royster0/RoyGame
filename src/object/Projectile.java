@@ -29,7 +29,7 @@ public class Projectile extends Entity {
         if(user == gamePanel.player) {
             int monIndex = gamePanel.collision.checkEntity(this, gamePanel.monster);
             if(monIndex != 999) {
-                gamePanel.player.damageMonster(monIndex, attack);
+                gamePanel.player.damageMonster(monIndex, attack, knockbackPower);
                 generateParticle(user.projectile, gamePanel.monster[gamePanel.currentMap][monIndex]);
                 alive = false;
             }

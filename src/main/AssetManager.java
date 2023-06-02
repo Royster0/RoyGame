@@ -6,13 +6,17 @@ import monster.MON_GreenSlime;
 import object.*;
 import tiles_interactive.IT_DryTree;
 
+// Asset manager class that handles objects/entities on the map.
 public class AssetManager {
 
     GamePanel gamePanel;
+
+    // Constructor that handles game panel.
     public AssetManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
+    // Add objects (such as coins) on the map into an 2D array.
     public void setObject() {
         int mapNum = 0;
 
@@ -42,6 +46,7 @@ public class AssetManager {
         gamePanel.objects[mapNum][4].worldY = gamePanel.tileSize * 27;
     }
 
+    // Adds the NPCs into their respective 2D array.
     public void setNPC() {
         int mapNum = 0;
         // Wise Man
@@ -55,6 +60,7 @@ public class AssetManager {
         gamePanel.npc[mapNum][0].worldY = gamePanel.tileSize * 7;
     }
 
+    // Adds the monsters to the monster 2D array.
     public void setMonster() {
         int mapNum = 0;
         int i = 0;
@@ -99,6 +105,7 @@ public class AssetManager {
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 20;
     }
 
+    // Adds the interactive tiles to their 2D array.
     public void setInteractiveTile() {
         int mapNum = 0;
         int i = 0;
@@ -109,20 +116,17 @@ public class AssetManager {
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 31, 12); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 32, 12); i++;
 
-        // Left dry tree
-        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 12, 23); i++;
-
         // Right dry tree
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 20); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 21); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 22); i++;
 
         // Shop dry trees
-        /*gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 17, 39); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 17, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 16, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 15, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 14, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 39); i++;
-        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38); */
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38);
     }
 }

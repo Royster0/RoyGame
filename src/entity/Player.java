@@ -10,6 +10,7 @@ import object.OBJ_Sword_Normal;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+// Player class handles the bulk of player functionality.
 public class Player extends Entity {
     KeyHandler keyHandler;
     public final int cameraX;
@@ -17,7 +18,7 @@ public class Player extends Entity {
     int positionCounter = 0;
     public boolean attackCanceled = false;
 
-    // Constructor
+    // Constructor that initializes the camera, key handling and setting default values.
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         super(gamePanel);
         this.keyHandler = keyHandler;
@@ -40,7 +41,8 @@ public class Player extends Entity {
         // PLAYER DEFAULT POSITION
         worldX = gamePanel.tileSize * 23;
         worldY = gamePanel.tileSize * 22;
-        speed = 4;
+        defaultSpeed = 4;
+        speed = defaultSpeed;
         direction = "down";
 
         // PLAYER DEFAULT STATS
@@ -63,12 +65,14 @@ public class Player extends Entity {
         defense = getDefense();
     }
 
+    // Sets the player's default positions.
     public void setDefaultPositions() {
         worldX = gamePanel.tileSize * 23;
         worldY = gamePanel.tileSize * 21;
         direction = "down";
     }
 
+    // Restores player mana
     public void restoreLifeMana() {
         life = maxLife;
         mana = maxMana;
@@ -130,6 +134,7 @@ public class Player extends Entity {
         }
     }
 
+    // Check for updates on player (animations)
     @Override
     public void update() {
         if(attacking) {
@@ -218,7 +223,13 @@ public class Player extends Entity {
             projectile.set(worldX, worldY, direction, true, this);
             projectile.subtractMana(this);
             // Add to projectile list
-            gamePanel.projectileList.add(projectile);
+            for(int i = 0; i < gamePanel.projectile[1].length; i++) {
+                Entity temp = gamePanel.projectile[gamePanel.currentMap][i];
+                if(temp == null) {
+                    gamePanel.projectile[gamePanel.currentMap][i] = projectile;
+                    break;
+                }
+            }
             shotAvailableCounter = 0;
             gamePanel.playEffect(10);
         }
@@ -272,13 +283,20 @@ public class Player extends Entity {
             // Attack area becomes solid
             hitBox.width = attackArea.width;
             hitBox.height = attackArea.height;
+
             // Check monster collision with new worldX and worldY
             int monsterIndex = gamePanel.collision.checkEntity(this, gamePanel.monster);
-            damageMonster(monsterIndex, attack);
+            damageMonster(monsterIndex, attack, currentWeapon.knockbackPower);
 
+            // Check iTile collision
             int iTileIndex = gamePanel.collision.checkEntity(this, gamePanel.iTile);
             damageITile(iTileIndex);
 
+            // Check projectile collision
+            int projectileIndex = gamePanel.collision.checkEntity(this, gamePanel.projectile);
+            damageProjectile(projectileIndex);
+
+            // After checking collision, restore the original data.
             worldX = currentWorldX;
             worldY = currentWorldY;
             hitBox.width = hitboxAreaWidth;
@@ -340,10 +358,14 @@ public class Player extends Entity {
     }
 
     // Player damaging enemy
-    public void damageMonster(int monIndex, int attack) {
+    public void damageMonster(int monIndex, int attack, int knockbackPower) {
         if(monIndex != 999) {
             if(!gamePanel.monster[gamePanel.currentMap][monIndex].invincible) {
                 gamePanel.playEffect(5);
+
+                if(knockbackPower > 0) {
+                    knockBack(gamePanel.monster[gamePanel.currentMap][monIndex], knockbackPower);
+                }
 
                 // damage calc
                 int damage = attack - gamePanel.monster[gamePanel.currentMap][monIndex].defense;
@@ -366,6 +388,13 @@ public class Player extends Entity {
         }
     }
 
+    public void knockBack(Entity entity, int knockbackPower) {
+        entity.direction = direction;
+        entity.speed += knockbackPower;
+        entity.knockback = true;
+    }
+
+    // Player damaging an interactive tile.
     public void damageITile(int iTileIndex) {
         if(iTileIndex != 999 && gamePanel.iTile[gamePanel.currentMap][iTileIndex].destructable &&
                 gamePanel.iTile[gamePanel.currentMap][iTileIndex].correctItem(this) && !gamePanel.iTile[gamePanel.currentMap][iTileIndex].invincible) {
@@ -378,6 +407,15 @@ public class Player extends Entity {
             if(gamePanel.iTile[gamePanel.currentMap][iTileIndex].life < 0) {
                 gamePanel.iTile[gamePanel.currentMap][iTileIndex] = gamePanel.iTile[gamePanel.currentMap][iTileIndex].getDestroyedForm();
             }
+        }
+    }
+
+    // Damage monster's projectile
+    public void damageProjectile(int i) {
+        if(i != 999) {
+            Entity projectile = gamePanel.projectile[gamePanel.currentMap][i];
+            projectile.alive = false;
+            generateParticle(projectile, projectile);
         }
     }
 
@@ -421,6 +459,7 @@ public class Player extends Entity {
         }
     }
 
+    // Draws player on screen
     @Override
     public void draw(Graphics2D graphics2D) {
         BufferedImage image = null;

@@ -8,8 +8,8 @@ public class OBJ_Rock extends Projectile{
         this.gamePanel = gamePanel;
 
         name = "Rock";
-        speed = 7;
-        maxLife = 45;
+        speed = 4;
+        maxLife = 50;
         life = maxLife;
         attack = 2;
         manaCost = 1;

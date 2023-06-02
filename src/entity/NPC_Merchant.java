@@ -5,6 +5,7 @@ import object.*;
 
 import java.awt.*;
 
+// Merchant NPC class.
 public class NPC_Merchant extends Entity{
     public NPC_Merchant(GamePanel gamePanel) {
         super(gamePanel);
@@ -25,6 +26,7 @@ public class NPC_Merchant extends Entity{
         setItems();
     }
 
+    // Retrieves images and sets up.
     public void getImage() {
         up1 = setup("npc/merchant_down_1", gamePanel.tileSize, gamePanel.tileSize);
         up2 = setup("npc/merchant_down_2", gamePanel.tileSize, gamePanel.tileSize);
@@ -36,10 +38,12 @@ public class NPC_Merchant extends Entity{
         right2 = setup("npc/merchant_down_2", gamePanel.tileSize, gamePanel.tileSize);
     }
 
+    // Sets the dialogue for the merchant.
     public void setDialogue() {
         dialogues[0] = "I have some stuff you may want.\nI got tons of stuff\nTake a look";
     }
 
+    // Items that the merchant sells.
     public void setItems() {
         inventory.add(new OBJ_Health_Potion(gamePanel));
         inventory.add(new OBJ_Key(gamePanel));
@@ -49,6 +53,7 @@ public class NPC_Merchant extends Entity{
         inventory.add(new OBJ_Shield_Upgrade(gamePanel));
     }
 
+    // Shows dialogue and speaks to player.
     @Override
     public void speak() {
         super.speak();
