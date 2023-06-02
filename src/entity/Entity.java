@@ -82,6 +82,8 @@ public class Entity {
     public int manaCost;
     public int price;
     public int knockbackPower = 0;
+    public boolean stackable = false;
+    public int stackAmount = 1;
 
     // TYPE OF ENTITY
     public int type;
@@ -186,7 +188,7 @@ public class Entity {
                 knockback = false;
                 speed = defaultSpeed;
             }
-            else if(!collisionOn) {
+            else {
                 switch(gamePanel.player.direction) {
                     case "up" -> worldY -= speed;
                     case "down" -> worldY += speed;

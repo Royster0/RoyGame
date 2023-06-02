@@ -17,6 +17,7 @@ public class OBJ_Key extends Entity {
         down1 = setup("objects/key", gamePanel.tileSize, gamePanel.tileSize);
         description = "[" + name + "] \nI wonder how I got this...";
         price = 5;
+        stackable = true;
     }
 
     // When player uses key, consume and unlock door.

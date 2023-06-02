@@ -52,7 +52,7 @@ public class Player extends Entity {
         dexterity = 1;
         exp = 0;
         nextLevelExp = 5;
-        coin = 20;
+        coin = 0;
 
         // PLAYER DEFAULT WEAPONS
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
@@ -323,9 +323,8 @@ public class Player extends Entity {
             }
             // INVENTORY ITEMS
             else {
-                String text = "";
-                if(inventory.size() < maxInventorySize) {
-                    inventory.add(gamePanel.objects[gamePanel.currentMap][objIndex]);
+                String text;
+                if(canObtainItem(gamePanel.objects[gamePanel.currentMap][objIndex])) {
                     gamePanel.playEffect(1);
                     text = "Picked up a " + gamePanel.objects[gamePanel.currentMap][objIndex].name;
                 } else {
@@ -459,10 +458,51 @@ public class Player extends Entity {
             }
             if(selectedItem.type == type_consumable) {
                 if(selectedItem.use(this)) {
-                    inventory.remove(itemIndex);
+                    if(selectedItem.stackAmount > 1) selectedItem.stackAmount--;
+                    else inventory.remove(itemIndex);
                 }
             }
         }
+    }
+
+    // Searches the player's inventory and returns index where it is.
+    public int searchItemInInventory(String itemName) {
+        int itemIndex = 999;
+
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i).name.equals(itemName)) {
+                itemIndex = i;
+            }
+        }
+        return itemIndex;
+    }
+
+    // Check if item is obtainable (max stack amount, max inventory, etc).
+    public boolean canObtainItem(Entity item) {
+        boolean canObtain = false;
+
+        // Check if stackable
+        if(item.stackable) {
+            int index = searchItemInInventory(item.name);
+            if(index != 999) {
+                inventory.get(index).stackAmount++;
+                canObtain = true;
+            }
+            else {
+                if(inventory.size() != maxInventorySize) {
+                    inventory.add(item);
+                    canObtain = true;
+                }
+            }
+        }
+        // not stackable
+        else {
+            if(inventory.size() != maxInventorySize) {
+                inventory.add(item);
+                canObtain = true;
+            }
+        }
+        return canObtain;
     }
 
     // Draws player on screen

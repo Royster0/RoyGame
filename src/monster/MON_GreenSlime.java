@@ -61,7 +61,7 @@ public class MON_GreenSlime extends Entity {
         int tileDist = (xDist + yDist) / gamePanel.tileSize;
 
         // if player comes into distance, becomes aggro
-        if(!onPath && tileDist < 5) {
+        if(!onPath && tileDist < 4) {
             int i = new Random().nextInt(100) + 1;
             if(i > 50) {
                 onPath = true;

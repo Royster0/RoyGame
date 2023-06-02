@@ -36,8 +36,10 @@ public class UI {
         // FONT CREATION
         try {
             InputStream is = getClass().getClassLoader().getResourceAsStream("font/litebulb-arcade.ttf");
+            assert is != null;
             litebulb_arcade = Font.createFont(Font.TRUETYPE_FONT, is);
             is = getClass().getClassLoader().getResourceAsStream("font/Purisa Bold.ttf");
+            assert is != null;
             purisaB = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (FontFormatException e) {
             throw new RuntimeException(e);
@@ -443,6 +445,22 @@ public class UI {
                 g2d.fillRoundRect(slotX, slotY, gamePanel.tileSize, gamePanel.tileSize, 10, 10);
             }
             g2d.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
+
+            // Display amount
+            if(entity.inventory.get(i).stackAmount > 1 && entity == gamePanel.player) {
+                g2d.setFont(g2d.getFont().deriveFont(40f));
+                String s = String.valueOf(entity.inventory.get(i).stackAmount);
+                int amountX = getXAlignRightText(s, slotX + 44);
+                int amountY = slotY + gamePanel.tileSize;
+
+                // Number shadow
+                g2d.setColor(new Color(60, 70, 60));
+                g2d.drawString(s, amountX, amountY);
+                // Number
+                g2d.setColor(Color.white);
+                g2d.drawString(s, amountX - 3, amountY - 3);
+            }
+
             slotX += slotSize;
             // if i reaches edge case, reset x, increment y's height to add tilesize.
             if(i == 4 || i == 9 || i == 14) {
@@ -771,6 +789,7 @@ public class UI {
             g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 38F));
             g2d.drawString(text, x - 8, y + 31);
 
+            // Buy an item
             if(gamePanel.keyHandler.enterPressed) {
                 if(npc.inventory.get(itemIndex).price > gamePanel.player.coin) {
                     substate = 0;
@@ -778,14 +797,15 @@ public class UI {
                     currentDialogue = "You need more money\nbum";
                     drawDialogueScreen();
                 }
-                else if(gamePanel.player.inventory.size() == gamePanel.player.maxInventorySize) {
-                    substate = 0;
-                    gamePanel.gameState = gamePanel.dialogueState;
-                    currentDialogue = "Your backpack is full! \nHow are you gonna carry it!";
-                    drawDialogueScreen();
-                } else {
-                    gamePanel.player.coin -= npc.inventory.get(itemIndex).price;
-                    gamePanel.player.inventory.add(npc.inventory.get(itemIndex));
+                else {
+                    if(gamePanel.player.canObtainItem(npc.inventory.get(itemIndex))) {
+                        gamePanel.player.coin -= npc.inventory.get(itemIndex).price;
+                    }
+                    else {
+                        substate = 0;
+                        gamePanel.gameState = gamePanel.dialogueState;
+                        currentDialogue = "Your inventory is full dude!";
+                    }
                 }
             }
         }
@@ -835,7 +855,12 @@ public class UI {
                     gamePanel.gameState = gamePanel.dialogueState;
                     currentDialogue = "You have that equipped!";
                 } else {
-                    gamePanel.player.inventory.remove(itemIndex);
+                    if(gamePanel.player.inventory.get(itemIndex).stackAmount > 1) {
+                        gamePanel.player.inventory.get(itemIndex).stackAmount--;
+                    }
+                    else {
+                        gamePanel.player.inventory.remove(itemIndex);
+                    }
                     gamePanel.player.coin += price;
                 }
             }

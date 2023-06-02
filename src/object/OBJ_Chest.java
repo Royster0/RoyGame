@@ -38,12 +38,11 @@ public class OBJ_Chest extends Entity {
             StringBuilder sb = new StringBuilder();
             sb.append("You found a ").append(loot.name).append("! ");
 
-            if(gamePanel.player.inventory.size() == gamePanel.player.maxInventorySize) {
+            if(!gamePanel.player.canObtainItem(loot)) {
                 sb.append("Your inventory is full though.");
             }
             else {
                 sb.append(" It has been added to your bag.");
-                gamePanel.player.inventory.add(loot);
                 down1 = image2;
                 opened = true;
             }
