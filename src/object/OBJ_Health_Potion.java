@@ -19,10 +19,11 @@ public class OBJ_Health_Potion extends Entity {
         price = 10;
     }
 
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
         gamePanel.gameState = gamePanel.dialogueState;
         gamePanel.ui.currentDialogue = "Your health has been \nrecovered by " + value/2;
         entity.life += value;
         gamePanel.playEffect(2);
+        return true;
     }
 }

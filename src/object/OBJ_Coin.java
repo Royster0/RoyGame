@@ -19,9 +19,10 @@ public class OBJ_Coin extends Entity {
     }
 
     @Override
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
         gamePanel.playEffect(1);
         gamePanel.ui.addMessage("Coin + " + value);
         gamePanel.player.coin += value;
+        return true;
     }
 }

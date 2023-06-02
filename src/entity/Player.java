@@ -2,10 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import object.OBJ_Fireball;
-import object.OBJ_Key;
-import object.OBJ_Shield_Wood;
-import object.OBJ_Sword_Normal;
+import object.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -84,7 +81,7 @@ public class Player extends Entity {
         inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
-        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Axe(gamePanel));
     }
 
     // Player's attack calculation
@@ -316,8 +313,16 @@ public class Player extends Entity {
             if(gamePanel.objects[gamePanel.currentMap][objIndex].type == type_pickup) {
                 gamePanel.objects[gamePanel.currentMap][objIndex].use(this);
                 gamePanel.objects[gamePanel.currentMap][objIndex] = null;
-            } else {
-                // INVENTORY ITEMS
+            }
+            // OBSTACLES
+            else if(gamePanel.objects[gamePanel.currentMap][objIndex].type == type_obstacle) {
+                if(keyHandler.enterPressed) {
+                    attackCanceled = true;
+                    gamePanel.objects[gamePanel.currentMap][objIndex].interact();
+                }
+            }
+            // INVENTORY ITEMS
+            else {
                 String text = "";
                 if(inventory.size() < maxInventorySize) {
                     inventory.add(gamePanel.objects[gamePanel.currentMap][objIndex]);
@@ -453,8 +458,9 @@ public class Player extends Entity {
                 defense = getDefense();
             }
             if(selectedItem.type == type_consumable) {
-                selectedItem.use(this);
-                inventory.remove(itemIndex);
+                if(selectedItem.use(this)) {
+                    inventory.remove(itemIndex);
+                }
             }
         }
     }

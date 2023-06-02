@@ -91,11 +91,26 @@ public class Entity {
     public final int type_shield = 5;
     public final int type_consumable = 6;
     public final int type_pickup = 7;
+    public final int type_obstacle = 8;
 
     // Entity constructor that initializes a GamePanel instance.
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
+
+    // Getter methods for position of Entity
+    public int getLeftX() { return worldX + hitBox.x; }
+
+    public int getRightX() { return worldX + hitBox.width; }
+
+    public int getTopY() { return worldY + hitBox.y; }
+
+    public int getBottomY() { return worldY + hitBox.height; }
+
+    // Getter methods for column and row of entity.
+    public int getCol() { return (worldX + hitBox.x) / gamePanel.tileSize; }
+
+    public int getRow() { return (worldY + hitBox.y) / gamePanel.tileSize; }
 
     // Sets actions for other entities to override.
     public void setAction() {}
@@ -121,8 +136,13 @@ public class Entity {
         }
     }
 
+    // Interact with obstacles/objects
+    public void interact() {
+
+    }
+
     // Method to allow other entities to use an object.
-    public void use(Entity entity) {}
+    public boolean use(Entity entity) { return false; }
 
     // Check drop method to allow other entities to drop items.
     public void checkDrop() {}
@@ -409,5 +429,37 @@ public class Entity {
             int nextRow = gamePanel.pFinder.pathList.get(0).row;
             if(nextCol == goalCol && nextRow == goalRow) onPath = false;
         }
+    }
+
+    // Receives the index of the target name if it is adjacent to the player.
+    public int getDetected(Entity user, Entity[][] target, String targetName) {
+        int index = 999;
+
+        // Check surrounding objects.
+        int nextWorldX = user.getLeftX();
+        int nextWorldY = user.getTopY();
+
+        // If object is adjacent to user it is detected.
+        switch(user.direction) {
+            case "up" -> nextWorldY = user.getTopY() - 1;
+            case "down" -> nextWorldY = user.getBottomY() + 1;
+            case "left" -> nextWorldX = user.getLeftX() - 1;
+            case "right" -> nextWorldX = user.getRightX() + 1;
+        }
+
+        int col = nextWorldX / gamePanel.tileSize;
+        int row = nextWorldY / gamePanel.tileSize;
+
+        for(int i = 0; i < target[1].length; i++) {
+            Entity temp = target[gamePanel.currentMap][i];
+            if(temp != null) {
+                if(temp.getCol() == col && temp.getRow() == row && temp.name.equals(targetName)) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        return index;
     }
 }

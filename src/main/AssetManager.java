@@ -19,31 +19,53 @@ public class AssetManager {
     // Add objects (such as coins) on the map into an 2D array.
     public void setObject() {
         int mapNum = 0;
-
+        int i = 0;
         // Coin 1
-        gamePanel.objects[mapNum][0] = new OBJ_Coin(gamePanel);
-        gamePanel.objects[mapNum][0].worldX = gamePanel.tileSize * 22;
-        gamePanel.objects[mapNum][0].worldY = gamePanel.tileSize * 39;
+        gamePanel.objects[mapNum][i] = new OBJ_Coin(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 22;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 39;
 
         // Key 2
-        gamePanel.objects[mapNum][1] = new OBJ_Key(gamePanel);
-        gamePanel.objects[mapNum][1].worldX = gamePanel.tileSize * 37;
-        gamePanel.objects[mapNum][1].worldY = gamePanel.tileSize * 41;
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Key(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 37;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 41;
 
         // Axe
-        gamePanel.objects[mapNum][2] = new OBJ_Axe(gamePanel);
-        gamePanel.objects[mapNum][2].worldX = gamePanel.tileSize * 37;
-        gamePanel.objects[mapNum][2].worldY = gamePanel.tileSize * 8;
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Axe(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 37;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 8;
 
         // Blue Shield
-        gamePanel.objects[mapNum][3] = new OBJ_Shield_Upgrade(gamePanel);
-        gamePanel.objects[mapNum][3].worldX = gamePanel.tileSize * 35;
-        gamePanel.objects[mapNum][3].worldY = gamePanel.tileSize * 39;
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Shield_Upgrade(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 35;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 39;
 
         // Health Potion
-        gamePanel.objects[mapNum][4] = new OBJ_Health_Potion(gamePanel);
-        gamePanel.objects[mapNum][4].worldX = gamePanel.tileSize * 22;
-        gamePanel.objects[mapNum][4].worldY = gamePanel.tileSize * 27;
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Health_Potion(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 22;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 27;
+
+        // Door 1
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Door(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 14;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 28;
+
+        // Door 2
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Door(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 10;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 12;
+
+        // Chest 1
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Chest(gamePanel, new OBJ_Key(gamePanel));
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 30;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 29;
     }
 
     // Adds the NPCs into their respective 2D array.
@@ -127,6 +149,16 @@ public class AssetManager {
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 15, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 14, 39); i++;
         gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 39); i++;
-        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38);
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 13, 38); i++;
+
+        // Chest 1 trees
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 30, 28); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 30, 27); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 29, 27); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 28, 27); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 27, 27); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 26, 27); i++;
+        gamePanel.iTile[mapNum][i] = new IT_DryTree(gamePanel, 25, 27);
+
     }
 }
