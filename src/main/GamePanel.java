@@ -4,6 +4,7 @@ package main;
 import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
+import environment.Environment;
 import tile.TileManager;
 import tiles_interactive.InteractiveTiles;
 
@@ -46,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public EventManager eventManager = new EventManager(this);
     Config config = new Config(this);
     public PathFinder pFinder = new PathFinder(this);
+    Environment environment = new Environment(this);
     Thread gameThread;
 
     // Entity & Object
@@ -86,6 +88,8 @@ public class GamePanel extends JPanel implements Runnable {
         assManager.setNPC();
         assManager.setMonster();
         assManager.setInteractiveTile();
+        environment.setup();
+
         gameState = titleState;
     }
 
@@ -257,6 +261,9 @@ public class GamePanel extends JPanel implements Runnable {
 
             // EMPTY ENTITY LIST
             entityList.clear();
+
+            // ENVIRONMENT
+            environment.draw(graphics2D);
 
             // UI
             ui.draw(graphics2D);

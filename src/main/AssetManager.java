@@ -49,16 +49,6 @@ public class AssetManager {
         gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 22;
         gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 27;
 
-        i++;
-        gamePanel.objects[mapNum][i] = new OBJ_Health_Potion(gamePanel);
-        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 23;
-        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 27;
-
-        i++;
-        gamePanel.objects[mapNum][i] = new OBJ_Health_Potion(gamePanel);
-        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 22;
-        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 28;
-
         // Door 1
         i++;
         gamePanel.objects[mapNum][i] = new OBJ_Door(gamePanel);
