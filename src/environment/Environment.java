@@ -7,7 +7,7 @@ import java.awt.*;
 public class Environment {
 
     GamePanel gp;
-    Lighting lighting;
+    public Lighting lighting;
 
     // Pass in GamePanel
     public Environment(GamePanel gp) {

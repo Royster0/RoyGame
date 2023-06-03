@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class UI {
     GamePanel gamePanel;
     Graphics2D g2d;
-    Font litebulb_arcade, purisaB;
+    public Font litebulb_arcade, purisaB;
     BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank, coin;
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
@@ -115,6 +115,10 @@ public class UI {
         // TRADING STATE
         if(gamePanel.gameState == gamePanel.tradeState) {
             drawTradeScreen();
+        }
+        // SLEEP STATE
+        if(gamePanel.gameState == gamePanel.sleepState) {
+            drawSleepScreen();
         }
     }
 
@@ -496,6 +500,7 @@ public class UI {
         }
     }
 
+    // Draws the game over screen upon death.
     public void drawGameOver() {
         // Darken screen
         g2d.setColor(new Color(0, 0, 0, 200));
@@ -532,6 +537,7 @@ public class UI {
         }
     }
 
+    // Draw options menu
     public void drawOptionsMenu() {
         g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(65F));
@@ -552,6 +558,7 @@ public class UI {
         gamePanel.keyHandler.enterPressed = false;
     }
 
+    // Draw top of options menu
     public void options_top(int frameX, int frameY) {
         // TITLE
         String text = "Options";
@@ -618,6 +625,7 @@ public class UI {
         gamePanel.config.saveConfig();
     }
 
+    // Draw controls in options menu
     public void options_controls(int frameX, int frameY) {
         String text = "Controls";
         int textX = getXCenteredText(text);
@@ -658,6 +666,7 @@ public class UI {
         }
     }
 
+    // Drawing end game screen with options to continue or start new.
     public void options_endGameConfirm(int frameX, int frameY) {
         int textX = frameX + gamePanel.tileSize;
         int textY = frameY + gamePanel.tileSize * 3;
@@ -695,6 +704,7 @@ public class UI {
         }
     }
 
+    // Draw a transition that fades to black.
     public void drawTransition() {
         counter++;
         g2d.setColor(new Color(0, 0, 0, counter * 5));
@@ -711,6 +721,7 @@ public class UI {
         }
     }
 
+    // Draw trading screen.
     public void drawTradeScreen() {
         switch(substate) {
             case 0 -> trade_select();
@@ -720,6 +731,7 @@ public class UI {
         gamePanel.keyHandler.enterPressed = false;
     }
 
+    // Draw merchant select screen.
     public void trade_select() {
         drawDialogueScreen();
 
@@ -753,6 +765,7 @@ public class UI {
         }
     }
 
+    // Draw merchant's buy screen.
     public void trade_buy() {
         // DRAW PLAYER INVENTORY IN BUY MENU
         drawInventory(gamePanel.player, false);
@@ -811,6 +824,7 @@ public class UI {
         }
     }
 
+    // Draw the merchant's selling screen.
     public void trade_sell() {
         // DRAW PLAYER INVENTORY
         drawInventory(gamePanel.player, true);
@@ -867,10 +881,35 @@ public class UI {
         }
     }
 
+    // Draw sleeping transition screen, gradually gets brighter until daytime.
+    public void drawSleepScreen() {
+        counter++;
+
+        if(counter < 120) {
+            gamePanel.environment.lighting.filterAlpha += 0.01f;
+            if(gamePanel.environment.lighting.filterAlpha > 1f) {
+                gamePanel.environment.lighting.filterAlpha = 1f;
+            }
+        }
+        if(counter >= 120) {
+            gamePanel.environment.lighting.filterAlpha -= 0.01f;
+            if(gamePanel.environment.lighting.filterAlpha <= 0f) {
+                gamePanel.environment.lighting.filterAlpha = 0f;
+                counter = 0;
+                gamePanel.environment.lighting.dayState = gamePanel.environment.lighting.day;
+                gamePanel.environment.lighting.dayCounter = 0;
+                gamePanel.gameState = gamePanel.playState;
+                gamePanel.player.getPlayerImage();
+            }
+        }
+    }
+
+    // Returns item index given its position.
     public int getItemIndex(int slotCol, int slotRow) {
         return slotCol + (slotRow * 5); // returns item index in ArrayList
     }
 
+    // General use-case drawing sub window.
     public void drawSubWindow(int x, int y, int width, int height) {
         Color c = new Color(0, 0, 0, 180); // black RGB
         g2d.setColor(c);
@@ -882,11 +921,13 @@ public class UI {
         g2d.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 20, 20);
     }
 
+    // Receive coordinate for centered text.
     public int getXCenteredText(String text) {
         int length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
         return (gamePanel.screenWidth / 2) - (length / 2);
     }
 
+    // Receive coordinate for aligning text to the right.
     public int getXAlignRightText(String text, int tailX) {
         int length = (int) g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
         return tailX - length;

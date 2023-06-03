@@ -5,6 +5,7 @@ import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
 import environment.Environment;
+import tile.Map;
 import tile.TileManager;
 import tiles_interactive.InteractiveTiles;
 
@@ -48,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
     Config config = new Config(this);
     public PathFinder pFinder = new PathFinder(this);
     Environment environment = new Environment(this);
+    Map map = new Map(this);
     Thread gameThread;
 
     // Entity & Object
@@ -72,6 +74,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int gameOverState = 6;
     public final int transitionState = 7;
     public final int tradeState = 8;
+    public final int sleepState = 9;
+    public final int mapState = 10;
 
     // GamePanel constructor. Initializes screen and key listener.
     public GamePanel() {
@@ -217,10 +221,18 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Debug
         long drawStart = 0;
-        if(keyHandler.checkDrawTime) drawStart = System.nanoTime();
+        if(keyHandler.checkDrawTime) {
+            drawStart = System.nanoTime();
+        }
 
         // TITLE SCREEN
-        if(gameState == titleState) ui.draw(graphics2D);
+        if(gameState == titleState) {
+            ui.draw(graphics2D);
+        }
+        // MAP SCREEN
+        else if(gameState == mapState) {
+            map.drawFullMap(graphics2D);
+        }
         else {
             // DRAW TILES
             tileManager.draw(graphics2D);
@@ -267,6 +279,9 @@ public class GamePanel extends JPanel implements Runnable {
 
             // ENVIRONMENT
             environment.draw(graphics2D);
+
+            // MINI MAP
+            map.drawMinimap(graphics2D);
 
             // UI
             ui.draw(graphics2D);

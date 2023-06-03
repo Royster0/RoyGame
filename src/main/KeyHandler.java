@@ -1,3 +1,5 @@
+// This class handles all the key inputs made in game.
+
 package main;
 
 import java.awt.event.KeyEvent;
@@ -10,6 +12,7 @@ public class KeyHandler implements KeyListener {
     // debug
     boolean checkDrawTime = false;
 
+    // Constructor instantiates game panel.
     public KeyHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
@@ -39,6 +42,8 @@ public class KeyHandler implements KeyListener {
         else if(gamePanel.gameState == gamePanel.gameOverState) gameOverState(code);
         // TRADE STATE
         else if(gamePanel.gameState == gamePanel.tradeState) tradeState(code);
+        // MAP STATE
+        else if(gamePanel.gameState == gamePanel.mapState) mapState(code);
     }
 
     // When keypress happens in title screen
@@ -100,6 +105,10 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_ENTER) enterPressed = true;
         if(code == KeyEvent.VK_F) shootPressed = true;
         if(code == KeyEvent.VK_ESCAPE) gamePanel.gameState = gamePanel.optionState;
+        if(code == KeyEvent.VK_M) gamePanel.gameState = gamePanel.mapState;
+        if(code == KeyEvent.VK_X) {
+            gamePanel.map.minimapOn = !gamePanel.map.minimapOn;
+        }
 
         // Debug Key
         if(code == KeyEvent.VK_T) {
@@ -134,6 +143,7 @@ public class KeyHandler implements KeyListener {
         playerInventory(code);
     }
 
+    // When in options state, listen to key actions.
     public void optionState(int code) {
         if(code == KeyEvent.VK_ESCAPE) gamePanel.gameState = gamePanel.playState;
         if(code == KeyEvent.VK_ENTER) enterPressed = true;
@@ -181,6 +191,7 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    // When in game over state, listen to key actions.
     public void gameOverState(int code) {
         if(code == KeyEvent.VK_W) {
             gamePanel.ui.commandNum--;
@@ -205,6 +216,7 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    // Handling trade menu key actions.
     public void tradeState(int code) {
         if(code == KeyEvent.VK_ENTER) enterPressed = true;
         if(gamePanel.ui.substate == 0) {
@@ -230,6 +242,13 @@ public class KeyHandler implements KeyListener {
             if(code == KeyEvent.VK_ESCAPE) {
                 gamePanel.ui.substate = 0;
             }
+        }
+    }
+
+    // When in map state, press M to leave.
+    public void mapState(int code) {
+        if(code == KeyEvent.VK_M) {
+            gamePanel.gameState = gamePanel.playState;
         }
     }
 

@@ -83,7 +83,8 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Axe(gamePanel));
-        //inventory.add(new OBJ_Lantern(gamePanel));
+        inventory.add(new OBJ_Lantern(gamePanel));
+        inventory.add(new OBJ_Tent(gamePanel));
     }
 
     // Player's attack calculation
@@ -131,6 +132,18 @@ public class Player extends Entity {
             attackRight1 = setup("player/boy_axe_right_1", gamePanel.tileSize * 2, gamePanel.tileSize);
             attackRight2 = setup("player/boy_axe_right_2", gamePanel.tileSize * 2, gamePanel.tileSize);
         }
+    }
+
+    // Import and scale player sleeping images.
+    public void getSleepingImage(BufferedImage image) {
+        up1 = image;
+        up2 = image;
+        down1 = image;
+        down2 = image;
+        left1 = image;
+        left2 = image;
+        right1 = image;
+        right2 = image;
     }
 
     // Check for updates on player (animations)
