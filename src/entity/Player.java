@@ -83,7 +83,7 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Axe(gamePanel));
-        inventory.add(new OBJ_Lantern(gamePanel));
+        //inventory.add(new OBJ_Lantern(gamePanel));
     }
 
     // Player's attack calculation

@@ -9,6 +9,15 @@ public class Lighting {
 
     GamePanel gp;
     BufferedImage darknessFilter;
+    int dayCounter;
+    float filterAlpha = 0f;
+
+    // Time of day states
+    final int day = 0;
+    final int dusk = 1;
+    final int night = 2;
+    final int dawn = 3;
+    int dayState = day;
 
     // Lighting constructor
     public Lighting(GamePanel gp) {
@@ -23,7 +32,7 @@ public class Lighting {
         Graphics2D g2 = (Graphics2D)darknessFilter.getGraphics();
 
         if(gp.player.currentLight == null) {
-            g2.setColor(new Color(0, 0, 0, .95f));
+            g2.setColor(new Color(0, 0.01f, 0.1f, .95f));
         }
         else {
             // Get center of "light" circle
@@ -33,18 +42,18 @@ public class Lighting {
             // Gradiant effect for light circle
             Color[] color = new Color[12];
             float[] fraction = new float[12];
-            color[0] = new Color(0, 0, 0, 0.1f);
-            color[1] = new Color(0, 0, 0, 0.35f);
-            color[2] = new Color(0, 0, 0, 0.47f);
-            color[3] = new Color(0, 0, 0, 0.59f);
-            color[4] = new Color(0, 0, 0, 0.68f);
-            color[5] = new Color(0, 0, 0, 0.76f);
-            color[6] = new Color(0, 0, 0, 0.82f);
-            color[7] = new Color(0, 0, 0, 0.85f);
-            color[8] = new Color(0, 0, 0, 0.88f);
-            color[9] = new Color(0, 0, 0, 0.90f);
-            color[10] = new Color(0, 0, 0, 0.92f);
-            color[11] = new Color(0, 0, 0, 0.93f);
+            color[0] = new Color(0, 0.01f, 0.1f, 0.1f);
+            color[1] = new Color(0, 0.01f, 0.1f, 0.35f);
+            color[2] = new Color(0, 0.01f, 0.1f, 0.47f);
+            color[3] = new Color(0, 0.01f, 0.1f, 0.59f);
+            color[4] = new Color(0, 0.01f, 0.1f, 0.68f);
+            color[5] = new Color(0, 0.01f, 0.1f, 0.76f);
+            color[6] = new Color(0, 0.01f, 0.1f, 0.82f);
+            color[7] = new Color(0, 0.01f, 0.1f, 0.85f);
+            color[8] = new Color(0, 0.01f, 0.1f, 0.88f);
+            color[9] = new Color(0, 0.01f, 0.1f, 0.90f);
+            color[10] = new Color(0, 0.01f, 0.1f, 0.92f);
+            color[11] = new Color(0, 0.01f, 0.1f, 0.93f);
             fraction[0] = 0.1f;
             fraction[1] = 0.4f;
             fraction[2] = 0.5f;
@@ -67,15 +76,63 @@ public class Lighting {
     }
 
     // Updates darkness whenever player equips/unequips lighting item.
+    // Manages day and night cycle.
     public void update() {
         if(gp.player.lightUpdated) {
             setLightSource();
             gp.player.lightUpdated = false;
         }
+
+        // if day, count until dusk
+        if(dayState == day) {
+            dayCounter++;
+            if(dayCounter >= 5400) {
+                dayState = dusk;
+                dayCounter = 0;
+            }
+        }
+        // if dusk, count until night
+        if(dayState == dusk) {
+            filterAlpha += 0.001f;
+            if(filterAlpha > 1f) {
+                filterAlpha = 1f;
+                dayState = night;
+            }
+        }
+        // if night, count until dawn
+        if(dayState == night) {
+            dayCounter++;
+            if(dayCounter > 5400) {
+                dayState = dawn;
+                dayCounter = 0;
+            }
+        }
+        // if dawn, count until day
+        if(dayState == dawn) {
+            filterAlpha -= 0.001f;
+            if(filterAlpha <= 0f) {
+                filterAlpha = 0f;
+                dayState = day;
+            }
+        }
     }
 
     // Drawing the filter onto the screen.
     public void draw(Graphics2D g2) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha));
         g2.drawImage(darknessFilter, 0, 0, null);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+        // DEBUGGING
+        String s = "";
+        switch(dayState) {
+            case day -> s = "Day";
+            case dusk -> s = "Dusk";
+            case night -> s = "Night";
+            case dawn -> s = "Dawn";
+        }
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(60f));
+        g2.drawString(s, 800, 500);
     }
 }
