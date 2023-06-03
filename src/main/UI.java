@@ -439,15 +439,15 @@ public class UI {
         // DRAW ITEMS
         for(int i = 0; i < entity.inventory.size(); i++) {
             // EQUIP CURSOR
-            if(entity.inventory.get(i) == entity.currentWeapon ||
-                    entity.inventory.get(i) == entity.currentShield) {
+            Entity current = entity.inventory.get(i);
+            if(current == entity.currentWeapon || current == entity.currentShield || current == entity.currentLight) {
                 g2d.setColor(new Color(217, 174, 92));
                 g2d.fillRoundRect(slotX, slotY, gamePanel.tileSize, gamePanel.tileSize, 10, 10);
             }
-            g2d.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
+            g2d.drawImage(current.down1, slotX, slotY, null);
 
             // Display amount
-            if(entity.inventory.get(i).stackAmount > 1 && entity == gamePanel.player) {
+            if(current.stackAmount > 1 && entity == gamePanel.player) {
                 g2d.setFont(g2d.getFont().deriveFont(40f));
                 String s = String.valueOf(entity.inventory.get(i).stackAmount);
                 int amountX = getXAlignRightText(s, slotX + 44);

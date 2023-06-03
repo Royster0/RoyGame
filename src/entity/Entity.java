@@ -71,6 +71,7 @@ public class Entity {
     public Entity currentWeapon;
     public Entity currentShield;
     public Projectile projectile;
+    public Entity currentLight;
 
     // ITEM ATTRIBUTES
     public ArrayList<Entity> inventory = new ArrayList<>();
@@ -84,6 +85,7 @@ public class Entity {
     public int knockbackPower = 0;
     public boolean stackable = false;
     public int stackAmount = 1;
+    public int lightRadius;
 
     // TYPE OF ENTITY
     public int type;
@@ -94,6 +96,7 @@ public class Entity {
     public final int type_consumable = 6;
     public final int type_pickup = 7;
     public final int type_obstacle = 8;
+    public final int type_light = 9;
 
     // Entity constructor that initializes a GamePanel instance.
     public Entity(GamePanel gamePanel) {

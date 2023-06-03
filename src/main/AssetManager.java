@@ -66,6 +66,12 @@ public class AssetManager {
         gamePanel.objects[mapNum][i] = new OBJ_Chest(gamePanel, new OBJ_Key(gamePanel));
         gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 30;
         gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 29;
+
+        // Lantern
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Lantern(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 25;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 40;
     }
 
     // Adds the NPCs into their respective 2D array.

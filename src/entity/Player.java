@@ -14,6 +14,7 @@ public class Player extends Entity {
     public final int cameraY;
     int positionCounter = 0;
     public boolean attackCanceled = false;
+    public boolean lightUpdated = false;
 
     // Constructor that initializes the camera, key handling and setting default values.
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
@@ -82,6 +83,7 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Axe(gamePanel));
+        inventory.add(new OBJ_Lantern(gamePanel));
     }
 
     // Player's attack calculation
@@ -461,6 +463,15 @@ public class Player extends Entity {
                     if(selectedItem.stackAmount > 1) selectedItem.stackAmount--;
                     else inventory.remove(itemIndex);
                 }
+            }
+            if(selectedItem.type == type_light) {
+                if(currentLight == selectedItem) {
+                    currentLight = null;
+                }
+                else {
+                    currentLight = selectedItem;
+                }
+                lightUpdated = true;
             }
         }
     }
