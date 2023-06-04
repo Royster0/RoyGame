@@ -103,6 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void resetGame(boolean restart) {
         player.setDefaultPositions();
         player.restoreStatus();
+        player.resetCounters();
         assManager.setNPC();
         assManager.setMonster();
 

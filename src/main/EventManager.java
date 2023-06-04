@@ -5,6 +5,7 @@ import entity.Entity;
 public class EventManager {
     GamePanel gamePanel;
     EventRect[][][] eventRect;
+    Entity eventMaster;
 
     // margin between events being able to trigger
     int previousEventX, previousEventY;
@@ -13,6 +14,7 @@ public class EventManager {
 
     public EventManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
+        eventMaster = new Entity(gamePanel);
 
         eventRect = new EventRect[gamePanel.maxMap][gamePanel.maxWorldCol][gamePanel.maxWorldRow];
 
@@ -39,8 +41,17 @@ public class EventManager {
                 }
             }
         }
+        setDialogue();
     }
 
+    public void setDialogue() {
+        eventMaster.dialogues[0][0] = "You've fell into a pit.";
+
+        eventMaster.dialogues[1][0] = "Your life and mana has been recovered.";
+        eventMaster.dialogues[1][1] = "Your progress has been saved.";
+    }
+
+    // Checking if player is allowed to trigger an event
     public void checkEvent() {
         // Check if player is > 1 tile away from last event
         int xDistance = Math.abs(gamePanel.player.worldX - previousEventX);
@@ -95,21 +106,22 @@ public class EventManager {
         return hit;
     }
 
+    // Fall damage pit, experimental
     public void damagePit(int gameState) {
         gamePanel.gameState = gameState;
         gamePanel.playEffect(6);
-        gamePanel.ui.currentDialogue = "You've fell into a pit.";
+        eventMaster.startDialogue(eventMaster, 0);
         gamePanel.player.life -= 1;
         canTriggerEvent = false;
     }
 
+    // Healing pool that saves player game and restores health and mana.
     public void healingPool(int gameState) {
         if (gamePanel.keyHandler.enterPressed) {
             gamePanel.gameState = gameState;
             gamePanel.player.attackCanceled = true;
             gamePanel.playEffect(2);
-            gamePanel.ui.currentDialogue = "You've drank some water. \nYour life and mana has been recovered.\n"
-                                            +"Your progress has been saved.";
+            eventMaster.startDialogue(eventMaster, 1);
             gamePanel.player.life = gamePanel.player.maxLife;
             gamePanel.player.mana = gamePanel.player.maxMana;
             gamePanel.assManager.setMonster();
@@ -119,6 +131,7 @@ public class EventManager {
         }
     }
 
+    // Experimental
     public void teleport(int map, int col, int row) {
         gamePanel.gameState = gamePanel.transitionState;
         tempMap = map;

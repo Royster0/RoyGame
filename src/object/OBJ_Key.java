@@ -20,20 +20,24 @@ public class OBJ_Key extends Entity {
         stackable = true;
     }
 
+    public void setDialogue() {
+        dialogues[0][0] = "You opened the door, congratulations!";
+        dialogues[1][0] = "What are you doing, man";
+    }
+
     // When player uses key, consume and unlock door.
     @Override
     public boolean use(Entity entity) {
-        gamePanel.gameState = gamePanel.dialogueState;
 
         int objIndex = getDetected(entity, gamePanel.objects, "Door");
 
         if(objIndex != 999) {
-            gamePanel.ui.currentDialogue = "You opened the door, congratulations!";
+            startDialogue(this, 0);
             gamePanel.playEffect(3);
             gamePanel.objects[gamePanel.currentMap][objIndex] = null;
             return true;
         } else {
-            gamePanel.ui.currentDialogue = "What are you doing, man";
+            startDialogue(this, 1);
             return false;
         }
     }

@@ -130,7 +130,9 @@ public class KeyHandler implements KeyListener {
 
     // When keypress happens in dialogue state
     public void dialogueState(int code) {
-        if(code == KeyEvent.VK_ENTER) gamePanel.gameState = gamePanel.playState;
+        if(code == KeyEvent.VK_ENTER) {
+            enterPressed = true;
+        }
     }
 
     // When keypress happens in character state

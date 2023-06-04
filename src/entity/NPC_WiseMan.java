@@ -21,6 +21,8 @@ public class NPC_WiseMan extends Entity{
         hitBox.width = 30;
         hitBox.height = 30;
 
+        dialogueSet = -1;
+
         getNPCImage();
         setDialogue();
     }
@@ -39,10 +41,19 @@ public class NPC_WiseMan extends Entity{
 
     // Sets the dialogue the man says
     public void setDialogue() {
-        dialogues[0] = "Greetings, lad";
-        dialogues[1] = "There are things here no man should see \nfor his own eyes...";
-        dialogues[2] = "I used to be a great wizard...";
-        dialogues[3] = "Good luck, youngster!";
+        dialogues[0][0] = "Greetings, lad";
+        dialogues[0][1] = "There are things here no man should see \nfor his own eyes...";
+        dialogues[0][2] = "I used to be a great wizard...";
+
+        dialogues[1][0] = "Anyway, press 'C' for your inventory.";
+        dialogues[1][1] = "As you've found out, 'enter' is attack and interact";
+        dialogues[1][2] = "Press 'Space' to block! \n There are legends of being \nable to parry as well.";
+        dialogues[1][3] = "'F' is for shooting your spell";
+        dialogues[1][4] = "'P' is for pause, 'M' is for map\nand 'X' is for minimap";
+
+        dialogues[2][0] = "Good luck on your adventures, youngster.\nDon't push yourself too hard.";
+        dialogues[2][1] = "I would advise opening that door...";
+        dialogues[2][2] = "The pool north of us has magic properties.";
     }
 
     // Sets action of old man after being spoken to.
@@ -70,10 +81,16 @@ public class NPC_WiseMan extends Entity{
         }
     }
 
-    // Speaks and then sets the man on a path
+    // Speaking to the tutorial old man
     @Override
     public void speak() {
-        super.speak();
-        onPath = true;
+        facePlayer();
+        startDialogue(this, dialogueSet);
+
+        dialogueSet++;
+
+        if(dialogues[dialogueSet][0] == null) {
+            dialogueSet = 1;
+        }
     }
 }

@@ -40,7 +40,16 @@ public class NPC_Merchant extends Entity{
 
     // Sets the dialogue for the merchant.
     public void setDialogue() {
-        dialogues[0] = "I have some stuff you may want.\nI got tons of stuff\nTake a look";
+        // Greeting dialogue
+        dialogues[0][0] = "I have some stuff you may want.\nI got tons of stuff\nTake a look";
+        // Exit dialogue
+        dialogues[1][0] = "Farewell, see you again.";
+        // Not enough coins dialogue
+        dialogues[2][0] = "You need more money, bum";
+        // Inventory full
+        dialogues[3][0] = "Your inventory is full dude!";
+        // Selling equipped item
+        dialogues[4][0] = "You have that equipped!";
     }
 
     // Items that the merchant sells.
@@ -56,7 +65,7 @@ public class NPC_Merchant extends Entity{
     // Shows dialogue and speaks to player.
     @Override
     public void speak() {
-        super.speak();
+
         gamePanel.gameState = gamePanel.tradeState;
         gamePanel.ui.npc = this; // give this npc to ui
     }

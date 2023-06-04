@@ -20,9 +20,12 @@ public class OBJ_Health_Potion extends Entity {
         stackable = true;
     }
 
+    public void setDialogue() {
+        dialogues[0][0] = "Your health has been \nrecovered by " + value/2;
+    }
+
     public boolean use(Entity entity) {
-        gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.ui.currentDialogue = "Your health has been \nrecovered by " + value/2;
+        startDialogue(this, 0);
         entity.life += value;
         gamePanel.playEffect(2);
         return true;

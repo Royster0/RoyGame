@@ -22,12 +22,17 @@ public class OBJ_Door extends Entity {
         hitBox.height = 32;
         hitBoxDefaultX = hitBox.x;
         hitBoxDefaultY = hitBox.y;
+
+        setDialogue();
+    }
+
+    public void setDialogue() {
+        dialogues[0][0] = "You need a key...";
     }
 
     // Interaction with player
     @Override
     public void interact() {
-        gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.ui.currentDialogue = "You need a key...";
+        startDialogue(this, 0);
     }
 }

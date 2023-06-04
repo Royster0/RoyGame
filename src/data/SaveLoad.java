@@ -16,20 +16,22 @@ public class SaveLoad {
 
     // Return an object given its name
     public Entity getObject(String name) {
-        return switch (name) {
-            case "Woodcutter's Axe" -> new OBJ_Axe(gp);
-            case "Boots" -> new OBJ_Boots(gp);
-            case "Health Potion" -> new OBJ_Health_Potion(gp);
-            case "Key" -> new OBJ_Key(gp);
-            case "Lantern" -> new OBJ_Lantern(gp);
-            case "Blue Shield" -> new OBJ_Shield_Upgrade(gp);
-            case "Wood Shield" -> new OBJ_Shield_Wood(gp);
-            case "Basic Sword" -> new OBJ_Sword_Normal(gp);
-            case "Tent" -> new OBJ_Tent(gp);
-            case "Door" -> new OBJ_Door(gp);
-            case "Chest" -> new OBJ_Chest(gp);
-            default -> null;
-        };
+        Entity obj = null;
+        switch (name) {
+            case "Woodcutter's Axe" -> obj = new OBJ_Axe(gp);
+            case "Boots" -> obj = new OBJ_Boots(gp);
+            case "Health Potion" -> obj = new OBJ_Health_Potion(gp);
+            case "Key" -> obj = new OBJ_Key(gp);
+            case "Lantern" -> obj = new OBJ_Lantern(gp);
+            case "Blue Shield" -> obj = new OBJ_Shield_Upgrade(gp);
+            case "Wood Shield" -> obj = new OBJ_Shield_Wood(gp);
+            case "Basic Sword" -> obj = new OBJ_Sword_Normal(gp);
+            case "Tent" -> obj = new OBJ_Tent(gp);
+            case "Door" -> obj = new OBJ_Door(gp);
+            case "Chest" -> obj = new OBJ_Chest(gp);
+        }
+
+        return obj;
     }
 
     // Saves the game

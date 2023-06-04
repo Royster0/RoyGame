@@ -28,14 +28,15 @@ public class Entity {
     public int hitBoxDefaultX, hitBoxDefaultY;
     public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public boolean collision = false;
-    String[] dialogues = new String[20];
+    public String[][] dialogues = new String[20][20];
     public Entity attacker;
 
     // STATE
     public int worldX, worldY;
     public String direction = "down";
     public int spriteNum = 1;
-    int dialogueIndex = 0;
+    public int dialogueSet = 0;
+    public int dialogueIndex = 0;
     public boolean collisionOn = false;
     public boolean invincible = false;
     public boolean attacking = false;
@@ -160,19 +161,36 @@ public class Entity {
     // Sets actions for other entities to override.
     public void setAction() {}
 
+    // Resetting the counters on death
+    public void resetCounters() {
+        spriteCounter = 0;
+        actionInterval = 0;
+        invincibleCounter = 0;
+        shotAvailableCounter = 0;
+        dyingCounter = 0;
+        hpBarCounter = 0;
+        knockbackCounter = 0;
+        guardCounter = 0;
+        offBalanceCounter = 0;
+    }
+
     // Damage reaction method for other entities to react to damage.
     public void damageReaction() {}
 
     // Method for other entities to have dialogue.
     public void speak() {
-        // reset dialogue if there is no dialogue left
-        if(dialogues[dialogueIndex] == null) {
-            dialogueIndex = 0;
-        }
-        gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
-        dialogueIndex++;
 
-        // Make entity face player when speaking
+
+    }
+
+    public void startDialogue(Entity entity, int setNum) {
+        gamePanel.gameState = gamePanel.dialogueState;
+        gamePanel.ui.npc = entity;
+        dialogueSet = setNum;
+    }
+
+    // Make entity face player when speaking
+    public void facePlayer() {
         switch (gamePanel.player.direction) {
             case "up" -> direction = "down";
             case "down" -> direction = "up";

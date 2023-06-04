@@ -30,29 +30,40 @@ public class OBJ_Chest extends Entity {
     @Override
     public void setLoot(Entity loot) {
         this.loot = loot;
+        // Setting here to prevent loot bug
+        setDialogue();
     }
 
+    // Setting chest dialogue
+    public void setDialogue() {
+        dialogues[0][0] = "You found a " + loot.name + "!";
+        dialogues[0][1] = "Your inventory is full though.";
+
+        dialogues[1][0] = "You found a " + loot.name + "!";
+        dialogues[1][1] = "It has been added to your bag.";
+
+        dialogues[2][0] = "You already opened this chest! You hog!";
+    }
+
+    // Interacting with the chest
     @Override
     public void interact() {
         gamePanel.gameState = gamePanel.dialogueState;
 
         if(!opened) {
             gamePanel.playEffect(3);
-            StringBuilder sb = new StringBuilder();
-            sb.append("You found a ").append(loot.name).append("! ");
 
             if(!gamePanel.player.canObtainItem(loot)) {
-                sb.append("Your inventory is full though.");
+                startDialogue(this, 0);
             }
             else {
-                sb.append(" It has been added to your bag.");
+                startDialogue(this, 1);
                 down1 = image2;
                 opened = true;
             }
-            gamePanel.ui.currentDialogue = sb.toString();
         }
         else {
-            gamePanel.ui.currentDialogue = "You already hit this chest, you hog!";
+            startDialogue(this, 2);
         }
     }
 }

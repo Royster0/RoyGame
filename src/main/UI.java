@@ -28,6 +28,8 @@ public class UI {
     int substate = 0;
     int counter = 0;
     public Entity npc;
+    int charIndex = 0;
+    String combinedText = "";
 
     // CONSTRUCTOR
     public UI(GamePanel gamePanel) {
@@ -309,6 +311,44 @@ public class UI {
         y += gamePanel.tileSize;
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 51));
 
+        // If text not null, display
+        if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
+            // currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
+
+            char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+            if(charIndex < characters.length) {
+
+                gamePanel.playEffect(17);
+                String s = String.valueOf(characters[charIndex]);
+                combinedText += s;
+
+                currentDialogue = combinedText;
+
+                charIndex++;
+            }
+
+            // If enter pressed, then dialogue index increases.
+            if(gamePanel.keyHandler.enterPressed) {
+
+                charIndex = 0;
+                combinedText = "";
+
+                if(gamePanel.gameState == gamePanel.dialogueState) {
+                    npc.dialogueIndex++;
+                    gamePanel.keyHandler.enterPressed = false;
+                }
+            }
+        }
+        // If it is null, conversation is over.
+        else {
+            npc.dialogueIndex = 0;
+
+            if(gamePanel.gameState == gamePanel.dialogueState) {
+                gamePanel.gameState = gamePanel.playState;
+            }
+        }
+
+        assert currentDialogue != null;
         for(String line : currentDialogue.split("\n")) {
             g2d.drawString(line, x, y);
             y += gamePanel.tileSize;
@@ -735,8 +775,11 @@ public class UI {
 
     // Draw merchant select screen.
     public void trade_select() {
+
+        npc.dialogueSet = 0;
         drawDialogueScreen();
 
+        // DRAW WINDOW
         int x = gamePanel.tileSize * 15;
         int y = gamePanel.tileSize * 6;
         int width = gamePanel.tileSize * 3;
@@ -762,8 +805,7 @@ public class UI {
         if(commandNum == 2) {
             g2d.drawString(">", x - 25, y);
             commandNum = 0;
-            gamePanel.gameState = gamePanel.dialogueState;
-            currentDialogue = "Farewell, see you again.";
+            npc.startDialogue(npc, 1);
         }
     }
 
@@ -808,9 +850,7 @@ public class UI {
             if(gamePanel.keyHandler.enterPressed) {
                 if(npc.inventory.get(itemIndex).price > gamePanel.player.coin) {
                     substate = 0;
-                    gamePanel.gameState = gamePanel.dialogueState;
-                    currentDialogue = "You need more money\nbum";
-                    drawDialogueScreen();
+                    npc.startDialogue(npc, 2);
                 }
                 else {
                     if(gamePanel.player.canObtainItem(npc.inventory.get(itemIndex))) {
@@ -818,8 +858,7 @@ public class UI {
                     }
                     else {
                         substate = 0;
-                        gamePanel.gameState = gamePanel.dialogueState;
-                        currentDialogue = "Your inventory is full dude!";
+                        npc.startDialogue(npc, 3);
                     }
                 }
             }
@@ -868,8 +907,7 @@ public class UI {
                         gamePanel.player.inventory.get(itemIndex) == gamePanel.player.currentWeapon) {
                     commandNum = 0;
                     substate = 0;
-                    gamePanel.gameState = gamePanel.dialogueState;
-                    currentDialogue = "You have that equipped!";
+                    npc.startDialogue(npc, 4);
                 } else {
                     if(gamePanel.player.inventory.get(itemIndex).stackAmount > 1) {
                         gamePanel.player.inventory.get(itemIndex).stackAmount--;

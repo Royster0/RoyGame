@@ -65,6 +65,7 @@ public class Player extends Entity {
         getAttackImage();
         getGuardImage();
         setItems();
+        setDialogue();
     }
 
     // Sets the player's default positions.
@@ -85,6 +86,11 @@ public class Player extends Entity {
         guarding = false;
         knockback = false;
         lightUpdated = true;
+    }
+
+    // Setting player's dialogues.
+    public void setDialogue() {
+        dialogues[0][0] = "You are now level " + level +"\nYour resolve strengthens";
     }
 
     // Sets the player's default items
@@ -387,7 +393,6 @@ public class Player extends Entity {
         if(gamePanel.keyHandler.enterPressed) {
             if(npcIndex != 999) {
                 attackCanceled = true;
-                gamePanel.gameState = gamePanel.dialogueState;
                 gamePanel.npc[gamePanel.currentMap][npcIndex].speak();
             }
         }
@@ -481,10 +486,12 @@ public class Player extends Entity {
             attack = getAttack();
             defense = getDefense();
             life = maxLife;
+            mana = maxMana;
 
             gamePanel.playEffect(8);
             gamePanel.gameState = gamePanel.dialogueState;
-            gamePanel.ui.currentDialogue = "You are now level " + level +"\nYour resolve strengthens" ;
+
+            startDialogue(this, 0);
         }
     }
 
