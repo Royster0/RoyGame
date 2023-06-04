@@ -3,6 +3,7 @@ package main;
 import entity.NPC_Merchant;
 import entity.NPC_WiseMan;
 import monster.MON_GreenSlime;
+import monster.MON_Orc;
 import object.*;
 import tiles_interactive.IT_DryTree;
 
@@ -131,6 +132,17 @@ public class AssetManager {
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 35;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 20;
+        i++;
+        // Orc 1
+        gamePanel.monster[mapNum][i] = new MON_Orc(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 13;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 32;
+        i++;
+        // Orc2
+        gamePanel.monster[mapNum][i] = new MON_Orc(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 12;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 31;
+        i++;
     }
 
     // Adds the interactive tiles to their 2D array.

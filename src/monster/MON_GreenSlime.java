@@ -52,73 +52,27 @@ public class MON_GreenSlime extends Entity {
         right2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
     }
 
-    // Slime update aggressiveness
-    public void update() {
-        super.update();
-
-        int xDist = Math.abs(worldX - gamePanel.player.worldX);
-        int yDist = Math.abs(worldY - gamePanel.player.worldY);
-        int tileDist = (xDist + yDist) / gamePanel.tileSize;
-
-        // if player comes into distance, becomes aggro
-        if(!onPath && tileDist < 4) {
-            int i = new Random().nextInt(100) + 1;
-            if(i > 50) {
-                onPath = true;
-            }
-        }
-
-        // if player leaves range, de-aggro
-        if(onPath && tileDist > 10) {
-            onPath = false;
-        }
-    }
-
     // Sets green slime action
     @Override
     public void setAction() {
+
         if(onPath) {
-            int goalCol = (gamePanel.player.worldX + gamePanel.player.hitBox.x) / gamePanel.tileSize;
-            int goalRow = (gamePanel.player.worldY + gamePanel.player.hitBox.y) / gamePanel.tileSize;
 
-            searchPath(goalCol, goalRow);
+            // if player leaves range, de-aggro
+            checkDeAggro(gamePanel.player, 11, 40);
 
-            int i = new Random().nextInt(200) + 1;
+            // Search direction to go
+            searchPath(getGoalCol(gamePanel.player), getGoalRow(gamePanel.player));
 
-            if(i > 197 && !projectile.alive && shotAvailableCounter == 30) {
-                projectile.set(worldX, worldY, direction, true, this);
-
-                // check for vacancy
-                for(int j = 0; j < gamePanel.projectile[1].length; j++) {
-                    if(gamePanel.projectile[gamePanel.currentMap][j] == null) {
-                        gamePanel.projectile[gamePanel.currentMap][j] = projectile;
-                        break;
-                    }
-                }
-
-                shotAvailableCounter = 0;
-            }
-        } else {
-            actionInterval++;
-
-            if(actionInterval == 120) {
-                Random random = new Random();
-                int i = random.nextInt(100) + 1;
-
-                if(i <= 25) {
-                    direction = "up";
-                }
-                if(i > 25 && i <= 50) {
-                    direction = "down";
-                }
-                if(i > 50 && i <= 75) {
-                    direction = "left";
-                }
-                if(i > 75) {
-                    direction = "right";
-                }
-                actionInterval = 0;
-            }
+            // Check if it shoots a projectile
+            checkProjectileShot(200, 30);
+        }
+        // If not on path.
+        else {
+            // Check de-aggro
+            checkAggro(gamePanel.player, 4, 100);
+            // Get random direction.
+            getRandomDire();
         }
     }
 

@@ -85,6 +85,7 @@ public class Player extends Entity {
         inventory.add(new OBJ_Axe(gamePanel));
         inventory.add(new OBJ_Lantern(gamePanel));
         inventory.add(new OBJ_Tent(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
     }
 
     // Player's attack calculation
@@ -298,7 +299,7 @@ public class Player extends Entity {
 
             // Check monster collision with new worldX and worldY
             int monsterIndex = gamePanel.collision.checkEntity(this, gamePanel.monster);
-            damageMonster(monsterIndex, attack, currentWeapon.knockbackPower);
+            damageMonster(monsterIndex, this, attack, currentWeapon.knockbackPower);
 
             // Check iTile collision
             int iTileIndex = gamePanel.collision.checkEntity(this, gamePanel.iTile);
@@ -377,13 +378,13 @@ public class Player extends Entity {
     }
 
     // Player damaging enemy
-    public void damageMonster(int monIndex, int attack, int knockbackPower) {
+    public void damageMonster(int monIndex, Entity attacker, int attack, int knockbackPower) {
         if(monIndex != 999) {
             if(!gamePanel.monster[gamePanel.currentMap][monIndex].invincible) {
                 gamePanel.playEffect(5);
 
                 if(knockbackPower > 0) {
-                    knockBack(gamePanel.monster[gamePanel.currentMap][monIndex], knockbackPower);
+                    knockBack(gamePanel.monster[gamePanel.currentMap][monIndex], attacker, knockbackPower);
                 }
 
                 // damage calc
@@ -405,12 +406,6 @@ public class Player extends Entity {
                 }
             }
         }
-    }
-
-    public void knockBack(Entity entity, int knockbackPower) {
-        entity.direction = direction;
-        entity.speed += knockbackPower;
-        entity.knockback = true;
     }
 
     // Player damaging an interactive tile.

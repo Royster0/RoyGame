@@ -26,7 +26,13 @@ public class CollisionManager {
 
         int tileNum1, tileNum2;
 
-        switch (entity.direction) {
+        // Use a temporal direction when it is being knocked back
+        String direction = entity.direction;
+        if(entity.knockback) {
+            direction = entity.knockbackDir;
+        }
+
+        switch (direction) {
             case "up" -> {
                 entityTopRow = (entityTopWorldY - entity.speed) / gamePanel.tileSize;
                 tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][entityLeftCol][entityTopRow];
@@ -106,6 +112,12 @@ public class CollisionManager {
     public int checkEntity(Entity entity, Entity[][] target) {
         int index = 999;
 
+        // Use a temporal direction when it is being knocked back
+        String direction = entity.direction;
+        if(entity.knockback) {
+            direction = entity.knockbackDir;
+        }
+
         for(int i = 0; i < target[1].length; i++) {
             if(target[gamePanel.currentMap][i] != null) {
 
@@ -117,7 +129,7 @@ public class CollisionManager {
                 target[gamePanel.currentMap][i].hitBox.x = target[gamePanel.currentMap][i].worldX + target[gamePanel.currentMap][i].hitBox.x;
                 target[gamePanel.currentMap][i].hitBox.y = target[gamePanel.currentMap][i].worldY + target[gamePanel.currentMap][i].hitBox.y;
 
-                switch (entity.direction) {
+                switch (direction) {
                     case "up" -> entity.hitBox.y -= entity.speed;
                     case "down" -> entity.hitBox.y += entity.speed;
                     case "left" -> entity.hitBox.x -= entity.speed;
@@ -140,6 +152,7 @@ public class CollisionManager {
         return index;
     }
 
+    // Check if something is colliding with player
     public boolean checkPlayer(Entity entity) {
         boolean contactedPlayer = false;
 

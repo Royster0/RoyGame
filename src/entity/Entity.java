@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 // Entity class that parents all the entities in the game.
 public class Entity {
@@ -26,8 +27,8 @@ public class Entity {
     public int hitBoxDefaultX, hitBoxDefaultY;
     public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public boolean collision = false;
-
     String[] dialogues = new String[20];
+    public Entity attacker;
 
     // STATE
     public int worldX, worldY;
@@ -42,6 +43,7 @@ public class Entity {
     public boolean hpBarOn = false;
     public boolean onPath = false;
     public boolean knockback = false;
+    public String knockbackDir;
 
     // COUNTERS
     public int spriteCounter = 0;
@@ -116,6 +118,31 @@ public class Entity {
     public int getCol() { return (worldX + hitBox.x) / gamePanel.tileSize; }
 
     public int getRow() { return (worldY + hitBox.y) / gamePanel.tileSize; }
+
+    // Getter method for xDist
+    public int getXDist(Entity target) {
+        return Math.abs(worldX - target.worldX);
+    }
+
+    // Getter method for yDist
+    public int getYDist(Entity target) {
+        return Math.abs(worldY - target.worldY);
+    }
+
+    // Getter method for tile distance
+    public int getTileDist(Entity target) {
+        return (getXDist(target) + getYDist(target)) / gamePanel.tileSize;
+    }
+
+    // Getter method for the goal column (x).
+    public int getGoalCol(Entity target) {
+        return (target.worldX + target.hitBox.x) / gamePanel.tileSize;
+    }
+
+    // Getter method for the goal row (x).
+    public int getGoalRow(Entity target) {
+        return (target.worldY + target.hitBox.y) / gamePanel.tileSize;
+    }
 
     // Sets actions for other entities to override.
     public void setAction() {}
@@ -192,7 +219,7 @@ public class Entity {
                 speed = defaultSpeed;
             }
             else {
-                switch(gamePanel.player.direction) {
+                switch(knockbackDir) {
                     case "up" -> worldY -= speed;
                     case "down" -> worldY += speed;
                     case "left" -> worldX -= speed;
@@ -242,6 +269,61 @@ public class Entity {
         if(shotAvailableCounter < 30) shotAvailableCounter++;
     }
 
+    // Check if projectile is shot
+    public void checkProjectileShot(int rate, int shotInterval) {
+        // Check if projectile is shot
+        int i = new Random().nextInt(rate);
+        if(i == 0 && !projectile.alive && shotAvailableCounter == shotInterval) {
+            projectile.set(worldX, worldY, direction, true, this);
+
+            // check for vacancy
+            for (int j = 0; j < gamePanel.projectile[1].length; j++) {
+                if (gamePanel.projectile[gamePanel.currentMap][j] == null) {
+                    gamePanel.projectile[gamePanel.currentMap][j] = projectile;
+                    break;
+                }
+            }
+
+            shotAvailableCounter = 0;
+        }
+    }
+
+    // Checking aggro against player
+    public void checkAggro(Entity target, int dist, int rate) {
+        if(getTileDist(target) < dist) {
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                onPath = true;
+            }
+        }
+    }
+
+    // Checking deaggro against player
+    public void checkDeAggro(Entity target, int dist, int rate) {
+        if(getTileDist(target) > dist) {
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                onPath = false;
+            }
+        }
+    }
+
+    // Sets random direction using action interval.
+    public void getRandomDire() {
+        // Get a random direction
+        actionInterval++;
+        if (actionInterval == 120) {
+            Random random = new Random();
+            int i = random.nextInt(100) + 1;
+
+            if (i <= 25) direction = "up";
+            if (i > 25 && i <= 50) direction = "down";
+            if (i > 50 && i <= 75) direction = "left";
+            if (i > 75) direction = "right";
+            actionInterval = 0;
+        }
+    }
+
     // Damage to player calculation
     public void damagePlayer(int attack) {
         if(!gamePanel.player.invincible) {
@@ -251,6 +333,14 @@ public class Entity {
             gamePanel.player.life -= damage;
             gamePanel.player.invincible = true;
         }
+    }
+
+    // Applies knockback to entities
+    public void knockBack(Entity target, Entity attacker, int knockbackPower) {
+        this.attacker = attacker;
+        target.knockbackDir = attacker.direction;
+        target.speed += knockbackPower;
+        target.knockback = true;
     }
 
     // Retrieves a particle color. Mainly used in interactive Tiles.
