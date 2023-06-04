@@ -6,6 +6,7 @@ import main.GamePanel;
 public class OBJ_Tent extends Entity {
 
     GamePanel gp;
+    public static final String objName = "Tent";
 
     // Tent object, brings sleep function.
     public OBJ_Tent(GamePanel gp) {
@@ -13,7 +14,7 @@ public class OBJ_Tent extends Entity {
         this.gp = gp;
 
         type = type_consumable;
-        name = "Tent";
+        name = objName;
         down1 = setup("objects/tent", gp.tileSize, gp.tileSize);
         description = "[Tent]\nSleep through the scary night.";
         price = 300;

@@ -14,26 +14,6 @@ public class SaveLoad {
         this.gp = gp;
     }
 
-    // Return an object given its name
-    public Entity getObject(String name) {
-        Entity obj = null;
-        switch (name) {
-            case "Woodcutter's Axe" -> obj = new OBJ_Axe(gp);
-            case "Boots" -> obj = new OBJ_Boots(gp);
-            case "Health Potion" -> obj = new OBJ_Health_Potion(gp);
-            case "Key" -> obj = new OBJ_Key(gp);
-            case "Lantern" -> obj = new OBJ_Lantern(gp);
-            case "Blue Shield" -> obj = new OBJ_Shield_Upgrade(gp);
-            case "Wood Shield" -> obj = new OBJ_Shield_Wood(gp);
-            case "Basic Sword" -> obj = new OBJ_Sword_Normal(gp);
-            case "Tent" -> obj = new OBJ_Tent(gp);
-            case "Door" -> obj = new OBJ_Door(gp);
-            case "Chest" -> obj = new OBJ_Chest(gp);
-        }
-
-        return obj;
-    }
-
     // Saves the game
     public void save() {
         try {
@@ -75,7 +55,7 @@ public class SaveLoad {
                 for(int j = 0; j < gp.objects[1].length; j++) {
 
                     if(gp.objects[i][j] == null) {
-                        data.mapObjectNames[i][j] = "no";
+                        data.mapObjectNames[i][j] = "NA";
                     }
                     else {
                         data.mapObjectNames[i][j] = gp.objects[i][j].name;
@@ -117,7 +97,7 @@ public class SaveLoad {
             // Read player inventory
             gp.player.inventory.clear();
             for(int i = 0; i < data.itemNames.size(); i++) {
-                gp.player.inventory.add(getObject(data.itemNames.get(i)));
+                gp.player.inventory.add(gp.eFactory.getObject(data.itemNames.get(i)));
                 gp.player.inventory.get(i).stackAmount = data.itemAmounts.get(i);
             }
 
@@ -132,15 +112,15 @@ public class SaveLoad {
 
                 for(int j = 0; j < gp.objects[1].length; j++) {
 
-                    if(data.mapObjectNames[i][j].equals("no")) {
+                    if(data.mapObjectNames[i][j].equals("NA")) {
                         gp.objects[i][j] = null;
                     }
                     else {
-                        gp.objects[i][j] = getObject(data.mapObjectNames[i][j]);
+                        gp.objects[i][j] = gp.eFactory.getObject(data.mapObjectNames[i][j]);
                         gp.objects[i][j].worldX = data.mapObjectWorldX[i][j];
                         gp.objects[i][j].worldY = data.mapObjectWorldY[i][j];
                         if(data.mapObjectLootNames[i][j] != null) {
-                            gp.objects[i][j].loot = getObject(data.mapObjectLootNames[i][j]);
+                            gp.objects[i][j].loot = gp.eFactory.getObject(data.mapObjectLootNames[i][j]);
                         }
                         gp.objects[i][j].opened = data.objectOpened[i][j];
                         if(gp.objects[i][j].opened) {

@@ -51,6 +51,7 @@ public class GamePanel extends JPanel implements Runnable {
     public PathFinder pFinder = new PathFinder(this);
     Environment environment = new Environment(this);
     Map map = new Map(this);
+    public EntityFactory eFactory = new EntityFactory(this);
     SaveLoad saveLoad = new SaveLoad(this);
     Thread gameThread;
 

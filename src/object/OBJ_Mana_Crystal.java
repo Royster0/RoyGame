@@ -6,6 +6,7 @@ import main.GamePanel;
 public class OBJ_Mana_Crystal extends Entity {
 
     GamePanel gamePanel;
+    public static final String objName = "Mana Crystal";
 
     public OBJ_Mana_Crystal(GamePanel gamePanel) {
         super(gamePanel);
@@ -13,7 +14,7 @@ public class OBJ_Mana_Crystal extends Entity {
 
         type = type_pickup;
         value = 1;
-        name = "Mana Crystal";
+        name = objName;
         down1 = setup("objects/manacrystal_full", gamePanel.tileSize, gamePanel.tileSize);
         image = setup("objects/manacrystal_full", gamePanel.tileSize, gamePanel.tileSize);
         image2 = setup("objects/manacrystal_blank", gamePanel.tileSize, gamePanel.tileSize);

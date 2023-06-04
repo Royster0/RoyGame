@@ -6,18 +6,21 @@ import main.GamePanel;
 public class OBJ_Key extends Entity {
 
     GamePanel gamePanel;
+    public static final String objName = "Key";
 
     // Constructor for the key, initializes variables
     public OBJ_Key(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
 
-        name = "Key";
+        name = objName;
         type = type_consumable;
         down1 = setup("objects/key", gamePanel.tileSize, gamePanel.tileSize);
         description = "[" + name + "] \nI wonder how I got this...";
         price = 5;
         stackable = true;
+
+        setDialogue();
     }
 
     public void setDialogue() {

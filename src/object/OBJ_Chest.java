@@ -6,13 +6,14 @@ import main.GamePanel;
 public class OBJ_Chest extends Entity {
 
     GamePanel gamePanel;
+    public static final String objName = "Chest";
 
     public OBJ_Chest(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
 
         type = type_obstacle;
-        name = "Chest";
+        name = objName;
         image = setup("objects/chest", gamePanel.tileSize, gamePanel.tileSize);
         image2 = setup("objects/chest_opened", gamePanel.tileSize, gamePanel.tileSize);
         down1 = image;
@@ -24,6 +25,7 @@ public class OBJ_Chest extends Entity {
         hitBox.height = 32;
         hitBoxDefaultX = hitBox.x;
         hitBoxDefaultY = hitBox.y;
+
     }
 
     // Setting this chest's loot
@@ -36,11 +38,9 @@ public class OBJ_Chest extends Entity {
 
     // Setting chest dialogue
     public void setDialogue() {
-        dialogues[0][0] = "You found a " + loot.name + "!";
-        dialogues[0][1] = "Your inventory is full though.";
+        dialogues[0][0] = "You found a " + loot.name + "!\nYour inventory is full though!";
 
-        dialogues[1][0] = "You found a " + loot.name + "!";
-        dialogues[1][1] = "It has been added to your bag.";
+        dialogues[1][0] = "You found a " + loot.name + "!\nIt has been added to your bag.";
 
         dialogues[2][0] = "You already opened this chest! You hog!";
     }

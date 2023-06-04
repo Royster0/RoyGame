@@ -3,11 +3,14 @@ package object;
 import main.GamePanel;
 
 public class OBJ_Rock extends Projectile{
+
+    public static final String objName = "Rock";
+
     public OBJ_Rock(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
 
-        name = "Rock";
+        name = objName;
         speed = 4;
         maxLife = 50;
         life = maxLife;

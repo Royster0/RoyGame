@@ -6,6 +6,7 @@ import main.GamePanel;
 public class OBJ_Health_Potion extends Entity {
 
     GamePanel gamePanel;
+    public static final String objName = "Health Potion";
 
     public OBJ_Health_Potion(GamePanel gamePanel) {
         super(gamePanel);
@@ -13,11 +14,13 @@ public class OBJ_Health_Potion extends Entity {
 
         value = 2;
         type = type_consumable;
-        name = "Health Potion";
+        name = objName;
         down1 = setup("objects/potion_red", gamePanel.tileSize, gamePanel.tileSize);
         description = "[" + name + "]\nRestore your health by " + value;
         price = 10;
         stackable = true;
+
+        setDialogue();
     }
 
     public void setDialogue() {
