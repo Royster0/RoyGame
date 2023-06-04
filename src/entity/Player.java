@@ -82,15 +82,16 @@ public class Player extends Entity {
         inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
+        inventory.add(new OBJ_Shield_Upgrade(gamePanel));
         inventory.add(new OBJ_Axe(gamePanel));
-        inventory.add(new OBJ_Lantern(gamePanel));
-        inventory.add(new OBJ_Tent(gamePanel));
         inventory.add(new OBJ_Key(gamePanel));
     }
 
     // Player's attack calculation
     public int getAttack() {
             attackArea = currentWeapon.attackArea;
+            motion1_dur = currentWeapon.motion1_dur;
+            motion2_dur = currentWeapon.motion2_dur;
             return attack = strength * currentWeapon.attackValue;
     }
 
@@ -268,57 +269,6 @@ public class Player extends Entity {
             gamePanel.ui.commandNum = -1;
             gamePanel.stopMusic();
             gamePanel.playEffect(12);
-        }
-    }
-
-    // Player attacking animation and extending hitbox to sword
-    public void attacking() {
-        spriteCounter++;
-
-        if(spriteCounter <= 5) {
-            spriteNum = 1;
-        }
-        if(spriteCounter > 5 && spriteCounter <= 25) {
-            spriteNum = 2;
-
-            // During this animation, check of weapon is colliding with attack-able monster
-            int currentWorldX = worldX;
-            int currentWorldY = worldY;
-            int hitboxAreaWidth = hitBox.width;
-            int hitboxAreaHeight = hitBox.height;
-
-            switch (direction) {
-                case "up" -> worldY -= attackArea.height;
-                case "down" -> worldY += attackArea.height;
-                case "left" -> worldX -= attackArea.width;
-                case "right" -> worldX += attackArea.width;
-            }
-            // Attack area becomes solid
-            hitBox.width = attackArea.width;
-            hitBox.height = attackArea.height;
-
-            // Check monster collision with new worldX and worldY
-            int monsterIndex = gamePanel.collision.checkEntity(this, gamePanel.monster);
-            damageMonster(monsterIndex, this, attack, currentWeapon.knockbackPower);
-
-            // Check iTile collision
-            int iTileIndex = gamePanel.collision.checkEntity(this, gamePanel.iTile);
-            damageITile(iTileIndex);
-
-            // Check projectile collision
-            int projectileIndex = gamePanel.collision.checkEntity(this, gamePanel.projectile);
-            damageProjectile(projectileIndex);
-
-            // After checking collision, restore the original data.
-            worldX = currentWorldX;
-            worldY = currentWorldY;
-            hitBox.width = hitboxAreaWidth;
-            hitBox.height = hitboxAreaHeight;
-        }
-        if(spriteCounter > 25) {
-            spriteNum = 1;
-            spriteCounter = 0;
-            attacking = false;
         }
     }
 

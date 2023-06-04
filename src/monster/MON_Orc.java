@@ -23,11 +23,11 @@ public class MON_Orc extends Entity {
         name = "Orc";
         defaultSpeed = 2;
         speed = defaultSpeed;
-        maxLife = 8;
+        maxLife = 7;
         life = maxLife;
         attack = 7;
         defense = 2;
-        exp = 10;
+        exp = 15;
 
         hitBox.x = 4;
         hitBox.y = 4;
@@ -37,6 +37,8 @@ public class MON_Orc extends Entity {
         hitBoxDefaultY = hitBox.y;
         attackArea.width = 48;
         attackArea.height = 48;
+        motion1_dur = 45;
+        motion2_dur = 90;
 
         getImage();
         getAttackImage();
@@ -56,26 +58,31 @@ public class MON_Orc extends Entity {
 
     // Sets up attack images for each direction
     public void getAttackImage() {
-        up1 = setup("monster/orc_attack_up_1", gp.tileSize, gp.tileSize * 2);
-        up2 = setup("monster/orc_attack_up_2", gp.tileSize, gp.tileSize * 2);
-        down1 = setup("monster/orc_attack_down_1", gp.tileSize, gp.tileSize * 2);
-        down2 = setup("monster/orc_attack_down_2", gp.tileSize, gp.tileSize * 2);
-        left1 = setup("monster/orc_attack_left_1", gp.tileSize * 2, gp.tileSize);
-        left2 = setup("monster/orc_attack_left_2", gp.tileSize * 2, gp.tileSize);
-        right1 = setup("monster/orc_attack_right_1", gp.tileSize * 2, gp.tileSize);
-        right2 = setup("monster/orc_attack_right_2", gp.tileSize * 2, gp.tileSize);
+        attackUp1 = setup("monster/orc_attack_up_1", gp.tileSize, gp.tileSize * 2);
+        attackUp2 = setup("monster/orc_attack_up_2", gp.tileSize, gp.tileSize * 2);
+        attackDown1 = setup("monster/orc_attack_down_1", gp.tileSize, gp.tileSize * 2);
+        attackDown2 = setup("monster/orc_attack_down_2", gp.tileSize, gp.tileSize * 2);
+        attackLeft1 = setup("monster/orc_attack_left_1", gp.tileSize * 2, gp.tileSize);
+        attackLeft2 = setup("monster/orc_attack_left_2", gp.tileSize * 2, gp.tileSize);
+        attackRight1 = setup("monster/orc_attack_right_1", gp.tileSize * 2, gp.tileSize);
+        attackRight2 = setup("monster/orc_attack_right_2", gp.tileSize * 2, gp.tileSize);
     }
 
     // Sets orc actions
     @Override
     public void setAction() {
         if(onPath) {
-            checkDeAggro(gp.player, 15, 100);
+            checkDeAggro(gp.player, 10, 100);
             searchPath(getGoalCol(gp.player), getGoalRow(gp.player));
         }
         else {
-            checkAggro(gp.player, 5, 100);
+            checkAggro(gp.player, 4, 100);
             getRandomDire();
+        }
+
+        // Check if it attacks
+        if(!attacking) {
+            checkAttacking(30, gp.tileSize * 4, gp.tileSize);
         }
     }
 
@@ -85,7 +92,7 @@ public class MON_Orc extends Entity {
         onPath = true;
     }
 
-    // Item drops from green slime.
+    // Item drops from orc.
     @Override
     public void checkDrop() {
         int i = new Random().nextInt(100) + 1;

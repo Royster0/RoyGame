@@ -13,7 +13,10 @@ public class OBJ_Axe extends Entity {
         down1 = setup("objects/axe", gamePanel.tileSize, gamePanel.tileSize);
         attackArea.width = 30;
         attackArea.height = 30;
+        attackValue = 2;
         price = 10;
         knockbackPower = 8;
+        motion1_dur = 15;
+        motion2_dur = 35;
     }
 }
