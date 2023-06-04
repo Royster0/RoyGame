@@ -29,8 +29,9 @@ public class Player extends Entity {
         hitBoxDefaultY = hitBox.y;
 
         setDefaultValues();
-        getPlayerImage();
-        getPlayerAttackImage();
+        getImage();
+        getAttackImage();
+        getGuardImage();
         setItems();
     }
 
@@ -75,6 +76,7 @@ public class Player extends Entity {
         life = maxLife;
         mana = maxMana;
         invincible = false;
+        transparent = false;
     }
 
     // Sets the player's default items
@@ -101,7 +103,7 @@ public class Player extends Entity {
     }
 
     // Import and scale player images
-    public void getPlayerImage() {
+    public void getImage() {
         up1 = setup("player/boy_up_1", gamePanel.tileSize, gamePanel.tileSize);
         up2 = setup("player/boy_up_2", gamePanel.tileSize, gamePanel.tileSize);
         down1 = setup("player/boy_down_1", gamePanel.tileSize, gamePanel.tileSize);
@@ -113,7 +115,7 @@ public class Player extends Entity {
     }
 
     // Import and scale player attacking images
-    public void getPlayerAttackImage() {
+    public void getAttackImage() {
         if(currentWeapon.type == type_sword) {
             attackUp1 = setup("player/boy_attack_up_1", gamePanel.tileSize, gamePanel.tileSize * 2);
             attackUp2 = setup("player/boy_attack_up_2", gamePanel.tileSize, gamePanel.tileSize * 2);
@@ -136,6 +138,13 @@ public class Player extends Entity {
         }
     }
 
+    public void getGuardImage() {
+        guardUp = setup("player/boy_guard_up", gamePanel.tileSize, gamePanel.tileSize);
+        guardDown = setup("player/boy_guard_down", gamePanel.tileSize, gamePanel.tileSize);
+        guardLeft = setup("player/boy_guard_left", gamePanel.tileSize, gamePanel.tileSize);
+        guardRight = setup("player/boy_guard_right", gamePanel.tileSize, gamePanel.tileSize);
+    }
+
     // Import and scale player sleeping images.
     public void getSleepingImage(BufferedImage image) {
         up1 = image;
@@ -151,11 +160,49 @@ public class Player extends Entity {
     // Check for updates on player (animations)
     @Override
     public void update() {
-        if(attacking) {
 
+        if(knockback) {
+
+            // Check objects, npc, monsters, tiles
+            collisionOn = false;
+            gamePanel.collision.checkTile(this);
+            gamePanel.collision.checkObject(this, true);
+            gamePanel.collision.checkEntity(this, gamePanel.npc);
+            gamePanel.collision.checkEntity(this, gamePanel.monster);
+            gamePanel.collision.checkEntity(this, gamePanel.iTile);
+
+            if(collisionOn) {
+                knockbackCounter = 0;
+                knockback = false;
+                speed = defaultSpeed;
+            }
+            else {
+                switch(knockbackDir) {
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
+                }
+            }
+            knockbackCounter++;
+            if(knockbackCounter == 5) {
+                knockbackCounter = 0;
+                knockback = false;
+                speed = defaultSpeed;
+            }
+
+        }
+        // If attacking
+        else if(attacking) {
             attacking();
-
-        } else if(keyHandler.upPressed || keyHandler.downPressed ||
+        }
+        // Cannot guard and attack at the same time.
+        else if(keyHandler.spacePressed) {
+            guarding = true;
+            guardCounter++;
+        }
+        // If pressing a movement key
+        else if(keyHandler.upPressed || keyHandler.downPressed ||
             keyHandler.leftPressed || keyHandler.rightPressed || keyHandler.enterPressed) {
 
             if(keyHandler.upPressed) {
@@ -210,6 +257,8 @@ public class Player extends Entity {
             }
             attackCanceled = false;
             gamePanel.keyHandler.enterPressed = false;
+            guarding = false;
+            guardCounter = 0;
 
             // SPRITE COUNTER ANIMATION
             spriteCounter++;
@@ -221,13 +270,17 @@ public class Player extends Entity {
                 }
                 spriteCounter = 0;
             }
-        } else {
+        }
+        // When not performing an action
+        else {
             positionCounter++;
 
             if(positionCounter == 25) {
                 spriteNum = 1;
                 positionCounter = 0;
             }
+            guarding = false;
+            guardCounter = 0;
         }
 
         // PROJECTILE HANDLING
@@ -253,6 +306,7 @@ public class Player extends Entity {
             invincibleCounter++;
             if(invincibleCounter > 60) {
                 invincible = false;
+                transparent = false;
                 invincibleCounter = 0;
             }
         }
@@ -321,8 +375,10 @@ public class Player extends Entity {
 
                 // damage calc
                 int damage = gamePanel.monster[gamePanel.currentMap][monsterIndex].attack - defense;
+                if(damage < 1) damage = 1;
                 life -= damage;
                 invincible = true;
+                transparent = true;
             }
         }
     }
@@ -335,6 +391,11 @@ public class Player extends Entity {
 
                 if(knockbackPower > 0) {
                     knockBack(gamePanel.monster[gamePanel.currentMap][monIndex], attacker, knockbackPower);
+                }
+
+                // If monster is off-balance, damage is multiplied
+                if(gamePanel.monster[gamePanel.currentMap][monIndex].offBalance) {
+                    attack *= 2;
                 }
 
                 // damage calc
@@ -410,7 +471,7 @@ public class Player extends Entity {
             if(selectedItem.type == type_sword || selectedItem.type == type_axe) {
                 currentWeapon = selectedItem;
                 attack = getAttack();
-                getPlayerAttackImage();
+                getAttackImage();
             }
             if(selectedItem.type == type_shield) {
                 currentShield = selectedItem;
@@ -492,6 +553,9 @@ public class Player extends Entity {
                     if (spriteNum == 1) image = attackUp1;
                     if (spriteNum == 2) image = attackUp2;
                 }
+                if(guarding) {
+                    image = guardUp;
+                }
             }
             case "down" -> {
                 if(!attacking) {
@@ -501,6 +565,9 @@ public class Player extends Entity {
                 if(attacking) {
                     if (spriteNum == 1) image = attackDown1;
                     if (spriteNum == 2) image = attackDown2;
+                }
+                if(guarding) {
+                    image = guardDown;
                 }
             }
             case "left" -> {
@@ -513,6 +580,9 @@ public class Player extends Entity {
                     if (spriteNum == 1) image = attackLeft1;
                     if (spriteNum == 2) image = attackLeft2;
                 }
+                if(guarding) {
+                    image = guardLeft;
+                }
             }
             case "right" -> {
                 if(!attacking) {
@@ -523,20 +593,17 @@ public class Player extends Entity {
                     if (spriteNum == 1) image = attackRight1;
                     if (spriteNum == 2) image = attackRight2;
                 }
+                if(guarding) {
+                    image = guardRight;
+                }
             }
         }
 
         // DAMAGE-TAKEN EFFECT & DRAW CHARACTER
-        if(invincible) {
+        if(transparent) {
             graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         }
         graphics2D.drawImage(image, tempCameraX, tempCameraY, null);
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-
-        /* DEBUG
-        // Draw Player HitBox
-        graphics2D.setColor(Color.RED);
-        graphics2D.drawRect(cameraX + hitBox.x, cameraY + hitBox.y, hitBox.width, hitBox.height);
-        */
     }
 }

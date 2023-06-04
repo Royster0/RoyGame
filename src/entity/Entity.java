@@ -20,7 +20,8 @@ public class Entity {
     public BufferedImage image, image2, image3;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2,
-                         attackLeft1, attackLeft2, attackRight1, attackRight2;
+                         attackLeft1, attackLeft2, attackRight1, attackRight2,
+                         guardUp, guardDown, guardLeft, guardRight;
 
     // HITBOX
     public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
@@ -43,6 +44,9 @@ public class Entity {
     public boolean hpBarOn = false;
     public boolean onPath = false;
     public boolean knockback = false;
+    public boolean guarding = false;
+    public boolean transparent = false;
+    public boolean offBalance = false;
     public String knockbackDir;
 
     // COUNTERS
@@ -53,6 +57,8 @@ public class Entity {
     int dyingCounter = 0;
     int hpBarCounter = 0;
     int knockbackCounter = 0;
+    public int guardCounter = 0;
+    int offBalanceCounter = 0;
 
     // CHARACTER STATUS
     public String name;
@@ -172,9 +178,7 @@ public class Entity {
     }
 
     // Interact with obstacles/objects
-    public void interact() {
-
-    }
+    public void interact() {}
 
     // Method to allow other entities to use an object.
     public boolean use(Entity entity) { return false; }
@@ -274,6 +278,14 @@ public class Entity {
         }
 
         if(shotAvailableCounter < 30) shotAvailableCounter++;
+
+        if(offBalance) {
+            offBalanceCounter++;
+            if(offBalanceCounter > 60) {
+                offBalance = false;
+                offBalanceCounter = 0;
+            }
+        }
     }
 
     // Checking if attack is within range
@@ -374,6 +386,18 @@ public class Entity {
         }
     }
 
+    // Returns opposite direction of direction.
+    public String getOppDir(String direction) {
+        String opposite = "";
+        switch(direction) {
+            case "up" -> opposite = "down";
+            case "down" -> opposite = "up";
+            case "left" -> opposite = "right";
+            case "right" -> opposite = "left";
+        }
+        return opposite;
+    }
+
     // Player attacking animation and extending hitbox to sword
     public void attacking() {
         spriteCounter++;
@@ -437,9 +461,38 @@ public class Entity {
     // Damage to player calculation
     public void damagePlayer(int attack) {
         if(!gamePanel.player.invincible) {
-            gamePanel.playEffect(6);
+            // Check damage
             int damage = attack - gamePanel.player.defense;
-            if(damage < 0) damage = 0;
+            String canGuardDir = getOppDir(direction);
+
+            // If player is guarding in the right direction, negate damage.
+            if(gamePanel.player.guarding && gamePanel.player.direction.equals(canGuardDir)) {
+
+                // 8 frame window to Parry and knock monster off balance
+                if(gamePanel.player.guardCounter < 8) {
+                    damage = 0;
+                    gamePanel.playEffect(16);
+                    knockBack(this, gamePanel.player, knockbackPower);
+                    offBalance = true;
+                    // show "off-balance" sprite
+                    spriteCounter -= 60;
+                }
+                // normal block
+                else {
+                    damage /= 3;
+                    gamePanel.playEffect(15);
+                }
+            }
+            // if not guarding
+            else {
+                gamePanel.playEffect(6);
+                if(damage < 1) damage = 1;
+            }
+
+            if(damage != 0) {
+                gamePanel.player.transparent = true;
+                knockBack(gamePanel.player, this, knockbackPower);
+            }
             gamePanel.player.life -= damage;
             gamePanel.player.invincible = true;
         }

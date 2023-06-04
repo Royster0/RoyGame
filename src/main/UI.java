@@ -899,7 +899,7 @@ public class UI {
                 gamePanel.environment.lighting.dayState = gamePanel.environment.lighting.day;
                 gamePanel.environment.lighting.dayCounter = 0;
                 gamePanel.gameState = gamePanel.playState;
-                gamePanel.player.getPlayerImage();
+                gamePanel.player.getImage();
             }
         }
     }
