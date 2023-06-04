@@ -47,7 +47,9 @@ public class Entity {
     public boolean guarding = false;
     public boolean transparent = false;
     public boolean offBalance = false;
+    public boolean opened = false;
     public String knockbackDir;
+    public Entity loot;
 
     // COUNTERS
     public int spriteCounter = 0;
@@ -152,6 +154,8 @@ public class Entity {
     public int getGoalRow(Entity target) {
         return (target.worldY + target.hitBox.y) / gamePanel.tileSize;
     }
+
+    public void setLoot(Entity loot) {}
 
     // Sets actions for other entities to override.
     public void setAction() {}
@@ -728,10 +732,10 @@ public class Entity {
 
         // If object is adjacent to user it is detected.
         switch(user.direction) {
-            case "up" -> nextWorldY = user.getTopY() - 1;
-            case "down" -> nextWorldY = user.getBottomY() + 1;
-            case "left" -> nextWorldX = user.getLeftX() - 1;
-            case "right" -> nextWorldX = user.getRightX() + 1;
+            case "up" -> nextWorldY = user.getTopY() - gamePanel.player.speed;
+            case "down" -> nextWorldY = user.getBottomY() + gamePanel.player.speed;
+            case "left" -> nextWorldX = user.getLeftX() - gamePanel.player.speed;
+            case "right" -> nextWorldX = user.getRightX() + gamePanel.player.speed;
         }
 
         int col = nextWorldX / gamePanel.tileSize;

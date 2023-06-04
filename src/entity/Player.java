@@ -29,10 +29,6 @@ public class Player extends Entity {
         hitBoxDefaultY = hitBox.y;
 
         setDefaultValues();
-        getImage();
-        getAttackImage();
-        getGuardImage();
-        setItems();
     }
 
     // Sets the player's default values (position, stats, items)
@@ -59,9 +55,16 @@ public class Player extends Entity {
         // PLAYER DEFAULT WEAPONS
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
+        currentLight = null;
         projectile = new OBJ_Fireball(gamePanel);
         attack = getAttack();
         defense = getDefense();
+
+        // Calling methods
+        getImage();
+        getAttackImage();
+        getGuardImage();
+        setItems();
     }
 
     // Sets the player's default positions.
@@ -71,12 +74,17 @@ public class Player extends Entity {
         direction = "down";
     }
 
-    // Restores player mana
-    public void restoreLifeMana() {
+    // Restores player statuses
+    public void restoreStatus() {
         life = maxLife;
         mana = maxMana;
+        speed = defaultSpeed;
         invincible = false;
         transparent = false;
+        attacking = false;
+        guarding = false;
+        knockback = false;
+        lightUpdated = true;
     }
 
     // Sets the player's default items
@@ -100,6 +108,24 @@ public class Player extends Entity {
     // Player's defense calculation
     public int getDefense() {
         return defense = dexterity * currentShield.defenseValue;
+    }
+
+    // Getter method for player weapon slot
+    public int getCurrWeaponSlot() {
+        int currentWeaponSlot = 0;
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i) == currentWeapon) currentWeaponSlot = i;
+        }
+        return currentWeaponSlot;
+    }
+
+    // Getter method for player shield slot
+    public int getCurrShieldSlot() {
+        int currentShieldSlot = 0;
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i) == currentShield) currentShieldSlot = i;
+        }
+        return currentShieldSlot;
     }
 
     // Import and scale player images

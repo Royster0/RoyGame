@@ -2,6 +2,7 @@ package main;
 
 // Import local packages
 import ai.PathFinder;
+import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
 import environment.Environment;
@@ -50,6 +51,7 @@ public class GamePanel extends JPanel implements Runnable {
     public PathFinder pFinder = new PathFinder(this);
     Environment environment = new Environment(this);
     Map map = new Map(this);
+    SaveLoad saveLoad = new SaveLoad(this);
     Thread gameThread;
 
     // Entity & Object
@@ -97,22 +99,19 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = titleState;
     }
 
-    // Retry screen after death
-    public void retry() {
+    // Retry or restart after the player dies.
+    public void resetGame(boolean restart) {
         player.setDefaultPositions();
-        player.restoreLifeMana();
+        player.restoreStatus();
         assManager.setNPC();
         assManager.setMonster();
-    }
 
-    // Restart
-    public void restart() {
-        player.setDefaultValues();
-        player.setItems();
-        assManager.setObject();
-        assManager.setNPC();
-        assManager.setMonster();
-        assManager.setInteractiveTile();
+        if(restart) {
+            player.setDefaultValues();
+            assManager.setObject();
+            assManager.setInteractiveTile();
+            environment.lighting.resetCycle();
+        }
     }
 
     // Starting the game thread.

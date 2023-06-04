@@ -688,6 +688,7 @@ public class UI {
             if(gamePanel.keyHandler.enterPressed) {
                 substate = 0;
                 gamePanel.gameState = gamePanel.titleState;
+                gamePanel.stopMusic();
             }
         }
         // NO
@@ -700,6 +701,7 @@ public class UI {
             if(gamePanel.keyHandler.enterPressed) {
                 substate = 0;
                 commandNum = 3;
+                gamePanel.resetGame(true);
             }
         }
     }

@@ -2,8 +2,6 @@ package main;
 
 import entity.Entity;
 
-import java.awt.*;
-
 public class EventManager {
     GamePanel gamePanel;
     EventRect[][][] eventRect;
@@ -110,10 +108,14 @@ public class EventManager {
             gamePanel.gameState = gameState;
             gamePanel.player.attackCanceled = true;
             gamePanel.playEffect(2);
-            gamePanel.ui.currentDialogue = "You've drank some water. \nYour life and mana has been recovered.";
+            gamePanel.ui.currentDialogue = "You've drank some water. \nYour life and mana has been recovered.\n"
+                                            +"Your progress has been saved.";
             gamePanel.player.life = gamePanel.player.maxLife;
             gamePanel.player.mana = gamePanel.player.maxMana;
             gamePanel.assManager.setMonster();
+
+            // Healing pool can also save
+            gamePanel.saveLoad.save();
         }
     }
 

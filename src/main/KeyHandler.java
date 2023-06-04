@@ -66,7 +66,9 @@ public class KeyHandler implements KeyListener {
                 }
                 // LOAD GAME
                 if(gamePanel.ui.commandNum == 1) {
-                    // load game code goes here
+                    gamePanel.saveLoad.load();
+                    gamePanel.gameState = gamePanel.playState;
+                    gamePanel.playMusic(0);
                 }
                 // QUIT GAME
                 if(gamePanel.ui.commandNum == 2) {
@@ -205,12 +207,12 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_ENTER) {
             if(gamePanel.ui.commandNum == 0) {
                 gamePanel.gameState = gamePanel.playState;
-                gamePanel.retry();
+                gamePanel.resetGame(false);
                 gamePanel.playMusic(0);
             }
             else if(gamePanel.ui.commandNum == 1) {
                 gamePanel.gameState = gamePanel.titleState;
-                gamePanel.restart();
+                gamePanel.resetGame(true);
             }
         }
     }

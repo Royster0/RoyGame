@@ -75,6 +75,12 @@ public class Lighting {
         g2.dispose();
     }
 
+    // Resets day cycle upon death.
+    public void resetCycle() {
+        dayState = day;
+        filterAlpha = 0f;
+    }
+
     // Updates darkness whenever player equips/unequips lighting item.
     // Manages day and night cycle.
     public void update() {

@@ -64,7 +64,8 @@ public class AssetManager {
 
         // Chest 1
         i++;
-        gamePanel.objects[mapNum][i] = new OBJ_Chest(gamePanel, new OBJ_Key(gamePanel));
+        gamePanel.objects[mapNum][i] = new OBJ_Chest(gamePanel);
+        gamePanel.objects[mapNum][i].setLoot(new OBJ_Key(gamePanel));
         gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 30;
         gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 29;
 
@@ -142,7 +143,6 @@ public class AssetManager {
         gamePanel.monster[mapNum][i] = new MON_Orc(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 12;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 31;
-        i++;
     }
 
     // Adds the interactive tiles to their 2D array.
