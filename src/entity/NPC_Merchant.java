@@ -7,12 +7,16 @@ import java.awt.*;
 
 // Merchant NPC class.
 public class NPC_Merchant extends Entity{
+
+    public static final String npcName = "Merchant";
+
     public NPC_Merchant(GamePanel gamePanel) {
         super(gamePanel);
 
         direction = "down";
         speed = 1;
 
+        name = npcName;
         hitBox = new Rectangle();
         hitBox.x = 8;
         hitBox.y = 16;

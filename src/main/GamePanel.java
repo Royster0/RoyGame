@@ -80,6 +80,13 @@ public class GamePanel extends JPanel implements Runnable {
     public final int sleepState = 9;
     public final int mapState = 10;
 
+    // Area player is in
+    public int currentArea;
+    public int nextAreaBuffer;
+    public final int outside = 50;
+    public final int indoor = 51;
+    public final int dungeon = 52;
+
     // GamePanel constructor. Initializes screen and key listener.
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -96,6 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
         assManager.setMonster();
         assManager.setInteractiveTile();
         environment.setup();
+        currentArea = outside;
 
         gameState = titleState;
     }
@@ -316,5 +324,20 @@ public class GamePanel extends JPanel implements Runnable {
     public void playEffect(int index) {
         soundEffect.setFile(index);
         soundEffect.play();
+    }
+
+    // Changes player area. Changes music and respawns monsters.
+    public void changeArea() {
+
+        if(nextAreaBuffer != currentArea) {
+            stopMusic();
+
+            if(nextAreaBuffer == outside) playMusic(0);
+            if(nextAreaBuffer == indoor) playMusic(18);
+            if(nextAreaBuffer == dungeon) playMusic(19);
+        }
+
+        currentArea = nextAreaBuffer;
+        assManager.setMonster();
     }
 }

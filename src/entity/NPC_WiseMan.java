@@ -7,12 +7,16 @@ import java.util.Random;
 
 // Old man that speaks to the player at the start of the game.
 public class NPC_WiseMan extends Entity{
+
+    public static final String npcName = "Wise Man";
+
     public NPC_WiseMan(GamePanel gamePanel) {
         super(gamePanel);
 
         direction = "down";
         speed = 1;
 
+        name = npcName;
         hitBox = new Rectangle();
         hitBox.x = 8;
         hitBox.y = 16;

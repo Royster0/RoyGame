@@ -5,11 +5,13 @@ import main.GamePanel;
 public class IT_Trunk extends InteractiveTiles{
 
     GamePanel gamePanel;
+    public static final String itName = "Trunk";
 
     public IT_Trunk(GamePanel gamePanel, int col, int row) {
         super(gamePanel, col, row);
         this.gamePanel = gamePanel;
 
+        name = itName;
         this.worldX = gamePanel.tileSize * col;
         this.worldY = gamePanel.tileSize * row;
 

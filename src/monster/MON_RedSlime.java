@@ -10,24 +10,25 @@ import object.OBJ_Rock;
 import java.util.Random;
 
 // Green slime monster
-public class MON_GreenSlime extends Entity {
+public class MON_RedSlime extends Entity {
 
     GamePanel gamePanel;
 
     // Initialize all values
-    public MON_GreenSlime(GamePanel gamePanel) {
+    public MON_RedSlime(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
 
-        name = "Green Slime";
+        name = "Red Slime";
         type = type_monster;
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxLife = 3;
+        maxLife = 5;
         life = maxLife;
-        attack = 3;
-        defense = 0;
-        exp = 2;
+        attack = 5;
+        defense = 1;
+        exp = 10;
+        projectile = new OBJ_Rock(gamePanel);
 
         hitBox.x = 3;
         hitBox.y = 18;
@@ -41,14 +42,14 @@ public class MON_GreenSlime extends Entity {
 
     // Setting up images
     public void getImage() {
-        up1 = setup("monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
-        up2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
-        down1 = setup("monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
-        down2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
-        left1 = setup("monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
-        left2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
-        right1 = setup("monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
-        right2 = setup("monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        up1 = setup("monster/redslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        up2 = setup("monster/redslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        down1 = setup("monster/redslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        down2 = setup("monster/redslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        left1 = setup("monster/redslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        left2 = setup("monster/redslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        right1 = setup("monster/redslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        right2 = setup("monster/redslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
     }
 
     // Sets green slime action
@@ -58,15 +59,18 @@ public class MON_GreenSlime extends Entity {
         if(onPath) {
 
             // if player leaves range, de-aggro
-            checkDeAggro(gamePanel.player, 11, 40);
+            checkDeAggro(gamePanel.player, 13, 40);
 
             // Search direction to go
             searchPath(getGoalCol(gamePanel.player), getGoalRow(gamePanel.player));
+
+            // Check if it shoots a projectile
+            checkProjectileShot(50, 30);
         }
         // If not on path.
         else {
             // Check de-aggro
-            checkAggro(gamePanel.player, 4, 100);
+            checkAggro(gamePanel.player, 6, 100);
             // Get random direction.
             getRandomDire();
         }

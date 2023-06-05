@@ -8,9 +8,11 @@ import java.awt.*;
 public class IT_DryTree extends InteractiveTiles{
 
     GamePanel gamePanel;
+    public static final String itName = "Dry Tree";
 
     public IT_DryTree(GamePanel gamePanel, int col, int row) {
         super(gamePanel, col, row);
+        name = itName;
         this.gamePanel = gamePanel;
         this.worldX = gamePanel.tileSize * col;
         this.worldY = gamePanel.tileSize * row;

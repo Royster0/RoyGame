@@ -64,14 +64,23 @@ public class EventManager {
         if (canTriggerEvent) {
             if (hit(0, 27, 16, "right")) damagePit(gamePanel.dialogueState);
 
+            // Healing pool positions
             else if (hit(0, 23, 12, "up")) healingPool(gamePanel.dialogueState);
             else if (hit(0, 24, 12, "up")) healingPool(gamePanel.dialogueState);
             else if (hit(0, 22, 12, "up")) healingPool(gamePanel.dialogueState);
             else if (hit(0, 21, 12, "up")) healingPool(gamePanel.dialogueState);
             else if (hit(0, 25, 12, "up")) healingPool(gamePanel.dialogueState);
 
-            else if(hit(0, 13, 37, "any")) teleport(1, 12, 13);
-            else if(hit(1, 12, 13, "any")) teleport(0, 13, 37);
+            // Shop teleports
+            else if(hit(0, 10, 39, "any")) teleport(1, 12, 13, gamePanel.indoor);
+            else if(hit(1, 12, 13, "any")) teleport(0, 10, 39, gamePanel.outside);
+            else if(hit(1, 12, 13, "any")) teleport(0, 10, 39, gamePanel.outside);
+
+            // Dungeon teleports
+            else if(hit(0, 12, 9, "any")) teleport(2, 9,41, gamePanel.dungeon); // to dungeon
+            else if(hit(2, 9, 41, "any")) teleport(0, 12,9, gamePanel.outside); // to world
+            else if(hit(2, 8, 7, "any")) teleport(3, 26 ,41, gamePanel.dungeon); // to dungeon 2
+            else if(hit(3, 26, 41, "any")) teleport(2, 8 ,7, gamePanel.dungeon); // to dungeon 1
 
             else if(hit(1, 12, 9, "up")) speak(gamePanel.npc[1][0]);
         }
@@ -132,8 +141,9 @@ public class EventManager {
     }
 
     // Experimental
-    public void teleport(int map, int col, int row) {
+    public void teleport(int map, int col, int row, int area) {
         gamePanel.gameState = gamePanel.transitionState;
+        gamePanel.nextAreaBuffer = area;
         tempMap = map;
         tempCol = col;
         tempRow = row;

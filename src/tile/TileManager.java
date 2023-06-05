@@ -25,10 +25,55 @@ public class TileManager {
         mapTileNum = new int[gamePanel.maxMap][gamePanel.maxWorldCol][gamePanel.maxWorldRow];
 
         getTileImage();
-        loadMap("maps/worldV2.txt", 0);
-        loadMap("maps/interior01.txt", 1);
+        loadMap("maps/worldmap.txt", 0);
+        loadMap("maps/indoor01.txt", 1);
+        loadMap("maps/dungeon01.txt", 2);
+        loadMap("maps/dungeon02.txt", 3);
     }
 
+    public void getTileImage() {
+        setup(0, "000", false);
+        setup(1, "001", false);
+        setup(2, "002", false);
+        setup(3, "003", false);
+        setup(4, "004", false);
+        setup(5, "005", false);
+        setup(6, "006", false);
+        setup(7, "007", false);
+        setup(8, "008", false);
+        setup(9, "009", false);
+        setup(10, "010", false);
+        setup(11, "011", false);
+        setup(12, "012", false);
+        setup(13, "013", false);
+        setup(14, "014", false);
+        setup(15, "015", false);
+        setup(16, "016", true);
+        setup(17, "017", false);
+        setup(18, "018", true);
+        setup(19, "019", true);
+        setup(20, "020", true);
+        setup(21, "021", true);
+        setup(22, "022", true);
+        setup(23, "023", true);
+        setup(24, "024", true);
+        setup(25, "025", true);
+        setup(26, "026", true);
+        setup(27, "027", true);
+        setup(28, "028", true);
+        setup(29, "029", true);
+        setup(30, "030", true);
+        setup(31, "031", true);
+        setup(32, "032", true);
+        setup(33, "033", false);
+        setup(34, "034", false);
+        setup(35, "035", true);
+        setup(36, "036", false);
+        setup(37, "037", false);
+
+    }
+
+    /*
     public void getTileImage() {
         setup(0, "grass00", false);
         setup(1, "grass00", false);
@@ -79,6 +124,7 @@ public class TileManager {
         setup(43, "floor01", false);
         setup(44, "table01", true);
     }
+     */
 
     public void setup(int index, String imageName, boolean collision) {
         UtilityTool uTool = new UtilityTool();

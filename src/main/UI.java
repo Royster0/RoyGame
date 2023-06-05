@@ -760,6 +760,7 @@ public class UI {
             gamePanel.player.worldY = gamePanel.tileSize * gamePanel.eventManager.tempRow;
             gamePanel.eventManager.previousEventX = gamePanel.player.worldX;
             gamePanel.eventManager.previousEventY = gamePanel.player.worldY;
+            gamePanel.changeArea();
         }
     }
 

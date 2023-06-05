@@ -34,8 +34,8 @@ public class Player extends Entity {
     // Sets the player's default values (position, stats, items)
     public void setDefaultValues() {
         // PLAYER DEFAULT POSITION
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 22;
+        worldX = gamePanel.tileSize * 12;
+        worldY = gamePanel.tileSize * 11;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -98,9 +98,8 @@ public class Player extends Entity {
         inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
-        inventory.add(new OBJ_Shield_Upgrade(gamePanel));
-        inventory.add(new OBJ_Axe(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Lantern(gamePanel));
+        inventory.add(new OBJ_Pickaxe(gamePanel));
     }
 
     // Player's attack calculation
@@ -168,8 +167,19 @@ public class Player extends Entity {
             attackRight1 = setup("player/boy_axe_right_1", gamePanel.tileSize * 2, gamePanel.tileSize);
             attackRight2 = setup("player/boy_axe_right_2", gamePanel.tileSize * 2, gamePanel.tileSize);
         }
+        if(currentWeapon.type == type_pickaxe) {
+            attackUp1 = setup("player/boy_pick_up_1", gamePanel.tileSize, gamePanel.tileSize * 2);
+            attackUp2 = setup("player/boy_pick_up_2", gamePanel.tileSize, gamePanel.tileSize * 2);
+            attackDown1 = setup("player/boy_pick_down_1", gamePanel.tileSize, gamePanel.tileSize * 2);
+            attackDown2 = setup("player/boy_pick_down_2", gamePanel.tileSize, gamePanel.tileSize * 2);
+            attackLeft1 = setup("player/boy_pick_left_1", gamePanel.tileSize * 2, gamePanel.tileSize);
+            attackLeft2 = setup("player/boy_pick_left_2", gamePanel.tileSize * 2, gamePanel.tileSize);
+            attackRight1 = setup("player/boy_pick_right_1", gamePanel.tileSize * 2, gamePanel.tileSize);
+            attackRight2 = setup("player/boy_pick_right_2", gamePanel.tileSize * 2, gamePanel.tileSize);
+        }
     }
 
+    // Getting block images
     public void getGuardImage() {
         guardUp = setup("player/boy_guard_up", gamePanel.tileSize, gamePanel.tileSize);
         guardDown = setup("player/boy_guard_down", gamePanel.tileSize, gamePanel.tileSize);
@@ -390,11 +400,13 @@ public class Player extends Entity {
 
     // Interaction with NPCs
     public void interactNPC(int npcIndex) {
-        if(gamePanel.keyHandler.enterPressed) {
-            if(npcIndex != 999) {
+        if(npcIndex != 999) {
+
+            if(gamePanel.keyHandler.enterPressed) {
                 attackCanceled = true;
                 gamePanel.npc[gamePanel.currentMap][npcIndex].speak();
             }
+            gamePanel.npc[gamePanel.currentMap][npcIndex].move(direction);
         }
     }
 
@@ -461,6 +473,7 @@ public class Player extends Entity {
             generateParticle(gamePanel.iTile[gamePanel.currentMap][iTileIndex], gamePanel.iTile[gamePanel.currentMap][iTileIndex]);
 
             if(gamePanel.iTile[gamePanel.currentMap][iTileIndex].life < 0) {
+                gamePanel.iTile[gamePanel.currentMap][iTileIndex].checkDrop();
                 gamePanel.iTile[gamePanel.currentMap][iTileIndex] = gamePanel.iTile[gamePanel.currentMap][iTileIndex].getDestroyedForm();
             }
         }
@@ -502,7 +515,7 @@ public class Player extends Entity {
         if(itemIndex < inventory.size()) {
             Entity selectedItem = inventory.get(itemIndex);
 
-            if(selectedItem.type == type_sword || selectedItem.type == type_axe) {
+            if(selectedItem.type == type_sword || selectedItem.type == type_axe || selectedItem.type == type_pickaxe) {
                 currentWeapon = selectedItem;
                 attack = getAttack();
                 getAttackImage();
