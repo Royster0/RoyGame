@@ -1,8 +1,6 @@
 package data;
 
-import entity.Entity;
 import main.GamePanel;
-import object.*;
 
 import java.io.*;
 
@@ -47,6 +45,7 @@ public class SaveLoad {
             data.mapObjectNames = new String[gp.maxMap][gp.objects[1].length];
             data.mapObjectWorldX = new int[gp.maxMap][gp.objects[1].length];
             data.mapObjectWorldY = new int[gp.maxMap][gp.objects[1].length];
+            // Chests
             data.mapObjectLootNames = new String[gp.maxMap][gp.objects[1].length];
             data.objectOpened = new boolean[gp.maxMap][gp.objects[1].length];
 

@@ -46,11 +46,11 @@ public class Player extends Entity {
         life = maxLife;
         maxMana = 4;
         mana = maxMana;
-        strength = 7;
+        strength = 1;
         dexterity = 1;
         exp = 0;
         nextLevelExp = 5;
-        coin = 50;
+        coin = 15;
 
         // PLAYER DEFAULT WEAPONS
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
@@ -99,11 +99,6 @@ public class Player extends Entity {
         inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
-        inventory.add(new OBJ_Lantern(gamePanel));
-        inventory.add(new OBJ_Axe(gamePanel));
-        inventory.add(new OBJ_Pickaxe(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
     }
 
     // Player's attack calculation

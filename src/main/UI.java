@@ -253,7 +253,7 @@ public class UI {
             g2d.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
             // TITLE TEXT
             g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 140F));
-            String text = "Some Guy's Adventure";
+            String text = "Little Adventurer";
             int x = getXCenteredText(text);
             int y = gamePanel.tileSize * 3;
             //SHADOW

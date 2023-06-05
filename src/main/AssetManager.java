@@ -66,6 +66,12 @@ public class AssetManager {
         gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 31;
         gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 21;
 
+        // Shield Up
+        i++;
+        gamePanel.objects[mapNum][i] = new OBJ_Shield_Upgrade(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 36;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 24;
+
         mapNum = 2;
         i = 0;
 
@@ -98,9 +104,9 @@ public class AssetManager {
 
         // Iron Door
         i++;
-        //gamePanel.objects[mapNum][i] = new OBJ_Door_Iron(gamePanel);
-        //gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 18;
-        //gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 23;
+        gamePanel.objects[mapNum][i] = new OBJ_Door_Iron(gamePanel);
+        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 18;
+        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 23;
     }
 
     // Adds the NPCs into their respective 2D array.
@@ -189,6 +195,17 @@ public class AssetManager {
         gamePanel.monster[mapNum][i] = new MON_RedSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 35;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 11;
+
+        // Orc 1
+        i++;
+        gamePanel.monster[mapNum][i] = new MON_Orc(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 11;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 32;
+        // Orc 2
+        i++;
+        gamePanel.monster[mapNum][i] = new MON_Orc(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 14;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 31;
 
         mapNum = 2;
         i = 0;
