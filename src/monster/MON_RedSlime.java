@@ -72,7 +72,7 @@ public class MON_RedSlime extends Entity {
             // Check de-aggro
             checkAggro(gamePanel.player, 6, 100);
             // Get random direction.
-            getRandomDire();
+            getRandomDire(100);
         }
     }
 

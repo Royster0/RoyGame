@@ -11,6 +11,7 @@ public class KeyHandler implements KeyListener {
 
     // debug
     boolean checkDrawTime = false;
+    public boolean godmode = false;
 
     // Constructor instantiates game panel.
     public KeyHandler(GamePanel gamePanel) {
@@ -115,11 +116,16 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_T) {
             checkDrawTime = !checkDrawTime;
         }
+        // Refresh map
         if(code == KeyEvent.VK_R) {
             switch (gamePanel.currentMap) {
                 case 0 -> gamePanel.tileManager.loadMap("maps/worldV2.txt", 0);
                 case 1 -> gamePanel.tileManager.loadMap("maps/interior01.txt", 1);
             }
+        }
+        // God Mode
+        if(code == KeyEvent.VK_G) {
+            godmode = !godmode;
         }
     }
 

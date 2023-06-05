@@ -34,8 +34,8 @@ public class Player extends Entity {
     // Sets the player's default values (position, stats, items)
     public void setDefaultValues() {
         // PLAYER DEFAULT POSITION
-        worldX = gamePanel.tileSize * 12;
-        worldY = gamePanel.tileSize * 11;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 21;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -46,11 +46,11 @@ public class Player extends Entity {
         life = maxLife;
         maxMana = 4;
         mana = maxMana;
-        strength = 1;
+        strength = 7;
         dexterity = 1;
         exp = 0;
         nextLevelExp = 5;
-        coin = 0;
+        coin = 50;
 
         // PLAYER DEFAULT WEAPONS
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
@@ -70,6 +70,7 @@ public class Player extends Entity {
 
     // Sets the player's default positions.
     public void setDefaultPositions() {
+        gamePanel.currentMap = 0;
         worldX = gamePanel.tileSize * 23;
         worldY = gamePanel.tileSize * 21;
         direction = "down";
@@ -99,7 +100,10 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Lantern(gamePanel));
+        inventory.add(new OBJ_Axe(gamePanel));
         inventory.add(new OBJ_Pickaxe(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
     }
 
     // Player's attack calculation
@@ -360,11 +364,13 @@ public class Player extends Entity {
         if(life > maxLife) life = maxLife;
         if(mana > maxMana) mana = maxMana;
 
-        if(life <= 0) {
-            gamePanel.gameState = gamePanel.gameOverState;
-            gamePanel.ui.commandNum = -1;
-            gamePanel.stopMusic();
-            gamePanel.playEffect(12);
+        if(!keyHandler.godmode) {
+            if(life <= 0) {
+                gamePanel.gameState = gamePanel.gameOverState;
+                gamePanel.ui.commandNum = -1;
+                gamePanel.stopMusic();
+                gamePanel.playEffect(12);
+            }
         }
     }
 

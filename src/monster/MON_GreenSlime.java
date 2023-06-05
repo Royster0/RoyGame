@@ -68,7 +68,7 @@ public class MON_GreenSlime extends Entity {
             // Check de-aggro
             checkAggro(gamePanel.player, 4, 100);
             // Get random direction.
-            getRandomDire();
+            getRandomDire(120);
         }
     }
 

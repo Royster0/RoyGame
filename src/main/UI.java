@@ -83,6 +83,7 @@ public class UI {
         if(gamePanel.gameState == gamePanel.playState) {
             drawPlayerLife();
             drawPlayerMana();
+            drawMonsterLife();
             drawMessage();
         }
         // PAUSE STATE
@@ -168,6 +169,53 @@ public class UI {
             g2d.drawImage(crystal_full, x, y, null);
             i++;
             x += 35;
+        }
+    }
+
+    public void drawMonsterLife() {
+
+        for(int i = 0; i < gamePanel.monster[1].length; i++) {
+            Entity monster = gamePanel.monster[gamePanel.currentMap][i];
+
+            if(monster != null && monster.inCamera()) {
+                // For non-boss monsters
+                if(monster.hpBarOn && !monster.boss) {
+                    double oneScale = (double) gamePanel.tileSize / monster.maxLife;
+                    double hpBarValue = oneScale * monster.life;
+
+                    if(hpBarValue <= 0) hpBarValue = 0;
+                    g2d.setColor(new Color(35, 35, 35));
+                    g2d.fillRect(monster.getScreenX() - 1, monster.getScreenY() - 6, gamePanel.tileSize + 2, 12);
+
+                    g2d.setColor(new Color(215, 9, 16));
+                    g2d.fillRect(monster.getScreenX(), monster.getScreenY() - 5, (int)hpBarValue, 10);
+
+                    // Turn off HP bar after 600 frames
+                    monster.hpBarCounter++;
+                    if(monster.hpBarCounter > 600) {
+                        monster.hpBarCounter = 0;
+                        monster.hpBarOn = false;
+                    }
+                }
+                else if(monster.boss) {
+                    double oneScale = (double) gamePanel.tileSize * 8 / monster.maxLife;
+                    double hpBarValue = oneScale * monster.life;
+
+                    int x = gamePanel.screenWidth / 2 - gamePanel.tileSize * 4;
+                    int y = gamePanel.tileSize * 10;
+
+                    if(hpBarValue <= 0) hpBarValue = 0;
+                    g2d.setColor(new Color(35, 35, 35));
+                    g2d.fillRect(x - 1, y - 1, gamePanel.tileSize * 8 + 2, 22);
+
+                    g2d.setColor(new Color(215, 9, 16));
+                    g2d.fillRect(x, y, (int)hpBarValue, 20);
+
+                    g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 40));
+                    g2d.setColor(Color.white);
+                    g2d.drawString(monster.name, x + 4, y - 10);
+                }
+            }
         }
     }
 

@@ -111,7 +111,7 @@ public class NPC_BigRock extends Entity{
             int yDist = Math.abs(worldY - interactiveTiles.worldY);
             int dist = Math.max(xDist, yDist);
 
-            if (dist < 8) {
+            if (dist < 10) {
                 if (linkedEntity == null) {
                     linkedEntity = interactiveTiles;
                     gamePanel.playEffect(3);

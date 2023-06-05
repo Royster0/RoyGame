@@ -72,6 +72,12 @@ public class CollisionManager {
     public int checkObject(Entity entity, boolean player) {
         int index = 999;
 
+        // Use a temporal direction when it is being knocked back
+        String direction = entity.direction;
+        if(entity.knockback) {
+            direction = entity.knockbackDir;
+        }
+
         for(int i = 0; i < gamePanel.objects[1].length; i++) {
 
             if(gamePanel.objects[gamePanel.currentMap][i] != null) {
@@ -83,7 +89,7 @@ public class CollisionManager {
                 gamePanel.objects[gamePanel.currentMap][i].hitBox.x = gamePanel.objects[gamePanel.currentMap][i].worldX + gamePanel.objects[gamePanel.currentMap][i].hitBox.x;
                 gamePanel.objects[gamePanel.currentMap][i].hitBox.y = gamePanel.objects[gamePanel.currentMap][i].worldY + gamePanel.objects[gamePanel.currentMap][i].hitBox.y;
 
-                switch (entity.direction) {
+                switch (direction) {
                     case "up" -> entity.hitBox.y -= entity.speed;
                     case "down" -> entity.hitBox.y += entity.speed;
                     case "left" -> entity.hitBox.x -= entity.speed;

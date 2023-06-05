@@ -120,7 +120,7 @@ public class SaveLoad {
                         gp.objects[i][j].worldX = data.mapObjectWorldX[i][j];
                         gp.objects[i][j].worldY = data.mapObjectWorldY[i][j];
                         if(data.mapObjectLootNames[i][j] != null) {
-                            gp.objects[i][j].loot = gp.eFactory.getObject(data.mapObjectLootNames[i][j]);
+                            gp.objects[i][j].setLoot(gp.eFactory.getObject(data.mapObjectLootNames[i][j]));
                         }
                         gp.objects[i][j].opened = data.objectOpened[i][j];
                         if(gp.objects[i][j].opened) {

@@ -3,9 +3,7 @@ package main;
 import entity.NPC_BigRock;
 import entity.NPC_Merchant;
 import entity.NPC_WiseMan;
-import monster.MON_GreenSlime;
-import monster.MON_Orc;
-import monster.MON_RedSlime;
+import monster.*;
 import object.*;
 import tiles_interactive.IT_DestructibleWall;
 import tiles_interactive.IT_DryTree;
@@ -100,9 +98,9 @@ public class AssetManager {
 
         // Iron Door
         i++;
-        gamePanel.objects[mapNum][i] = new OBJ_Door_Iron(gamePanel);
-        gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 18;
-        gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 23;
+        //gamePanel.objects[mapNum][i] = new OBJ_Door_Iron(gamePanel);
+        //gamePanel.objects[mapNum][i].worldX = gamePanel.tileSize * 18;
+        //gamePanel.objects[mapNum][i].worldY = gamePanel.tileSize * 23;
     }
 
     // Adds the NPCs into their respective 2D array.
@@ -146,58 +144,85 @@ public class AssetManager {
     public void setMonster() {
         int mapNum = 0;
         int i = 0;
+
         // Green slime 1
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 21;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 38;
-
         // Green slime 2
         i++;
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 20;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 36;
-
         // Green slime 3
         i++;
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 34;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 38;
-
         // Green slime 4
         i++;
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 36;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 39;
-
         // Green slime 5
         i++;
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 37;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 26;
-
         // Green slime 6
         i++;
         gamePanel.monster[mapNum][i] = new MON_GreenSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 36;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 23;
-
         // Red slime 1
         i++;
         gamePanel.monster[mapNum][i] = new MON_RedSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 36;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 26;
-
         // Red slime 2
         i++;
         gamePanel.monster[mapNum][i] = new MON_RedSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 34;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 10;
-
         // Red slime 3
         i++;
         gamePanel.monster[mapNum][i] = new MON_RedSlime(gamePanel);
         gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 35;
         gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 11;
+
+        mapNum = 2;
+        i = 0;
+
+        // Bat 1
+        gamePanel.monster[mapNum][i] = new MON_Bat(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 34;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 39;
+        // Bat 2
+        i++;
+        gamePanel.monster[mapNum][i] = new MON_Bat(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 36;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 25;
+        // Bat 3
+        i++;
+        gamePanel.monster[mapNum][i] = new MON_Bat(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 39;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 26;
+        // Bat 4
+        i++;
+        gamePanel.monster[mapNum][i] = new MON_Bat(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 28;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 11;
+        // Bat 5
+        i++;
+        gamePanel.monster[mapNum][i] = new MON_Bat(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 10;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 19;
+
+        mapNum = 3;
+        i = 0;
+        gamePanel.monster[mapNum][i] = new MON_SkeletonBoss(gamePanel);
+        gamePanel.monster[mapNum][i].worldX = gamePanel.tileSize * 23;
+        gamePanel.monster[mapNum][i].worldY = gamePanel.tileSize * 16;
     }
 
     // Adds the interactive tiles to their 2D array.

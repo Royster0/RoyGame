@@ -78,7 +78,7 @@ public class MON_Orc extends Entity {
         }
         else {
             checkAggro(gp.player, 4, 100);
-            getRandomDire();
+            getRandomDire(100);
         }
 
         // Check if it attacks

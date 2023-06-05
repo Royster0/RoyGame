@@ -15,6 +15,6 @@ public class OBJ_Lantern extends Entity {
         down1 = setup("objects/lantern", gp.tileSize, gp.tileSize);
         description = "[Lantern]\nLight up your world.";
         price = 50;
-        lightRadius = 215;
+        lightRadius = 275;
     }
 }

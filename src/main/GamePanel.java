@@ -110,6 +110,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Retry or restart after the player dies.
     public void resetGame(boolean restart) {
+        currentArea = outside;
         player.setDefaultPositions();
         player.restoreStatus();
         player.resetCounters();
@@ -300,9 +301,19 @@ public class GamePanel extends JPanel implements Runnable {
         if(keyHandler.checkDrawTime) {
             long drawEnd = System.nanoTime();
             long drawPassed = drawEnd - drawStart;
+
+            graphics2D.setFont(new Font("Arial", Font.PLAIN, 20));
             graphics2D.setColor(Color.WHITE);
-            graphics2D.drawString("Draw Time: " + drawPassed, 10, 400);
-            System.out.println("Draw Time: " + drawPassed);
+            int x = 10;
+            int y = 400;
+            int lineHeight = 20;
+
+            graphics2D.drawString("WorldX: " + player.worldX, x, y); y+= lineHeight;
+            graphics2D.drawString("WorldY: " + player.worldY, x, y); y+= lineHeight;
+            graphics2D.drawString("Col: " + (player.worldX + player.hitBox.x) / tileSize, x, y); y+= lineHeight;
+            graphics2D.drawString("Row: " + (player.worldY + player.hitBox.y) / tileSize, x, y); y+= lineHeight;
+            graphics2D.drawString("Draw Time: " + drawPassed, x, y); y+= lineHeight;
+            graphics2D.drawString("God: " + keyHandler.godmode, x, y);
         }
 
         graphics2D.dispose();
